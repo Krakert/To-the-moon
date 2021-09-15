@@ -1,28 +1,19 @@
 # Stefan de Kraker IoT individual project
+For this individual project I have chosen for the blueprint: "To the moon".
+This blueprint focus on making a device that keeps an eye on your savings in the crypto market.
+Therefor I'm making a small embedded devices that will show this.
+On this Gitlab repo you will find everything you need to know to about the project.
 
-# Overall design of the system
+# Learning Goals
+Because of my background with technical computer science.
+I have some knowledge regarding programming and hardware development.
+To challenge myself I had the choice not to work with the Arduino IDE or framework.
+I'm going to use a STM32 MCU and will work with there framework and IDE.
+The next challenge is integrating a STM32 MCU on a custom PCB, to make a complete design.
 
-```mermaid
-flowchart
 
-subgraph Power
-powerin[DC in] -- Battery Charger --> Lipo[Lipo 2S];
-Lipo --> id1[Voltage regulator]
-end
+# Overall hardware design of the system
+For this Blueprint I will have made some hardware decisions that are fixed. 
+This has to do with the challenge i'm giving myself
+![My Diagram](hardware_architecture_overview.drawio.svg)
 
-id1 -- 5V --- TFT
-id1 -- 5V --- STM[STM32Fxxx]
-id1 -- 5V --- ENC28J60
-
-subgraph Brains
-STM -- SPI Bus --- ENC28J60
-STM -- LCD interface --- TFT
-end
-
-subgraph Network
-STM --- API[API HvA]
-API --- webdashboard
-webdashboard --- Database
-end
-
-```
