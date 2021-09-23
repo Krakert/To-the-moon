@@ -14,6 +14,11 @@ The next challenge is integrating a STM32 MCU on a custom PCB, to make a complet
 
 # Overall hardware design of the system
 For this Blueprint I will have made some hardware decisions that are fixed. 
-This has to do with the challenge i'm giving myself
-![My Diagram](hardware_architecture_overview.drawio.svg)
-
+This has to do with the challenge i'm gave myself.
+## BOM
+- ESP8266
+- OLED display
+- 2S battery pack
+\
+\
+![My Diagram](Doc/hardware_architecture_overview.drawio.svg)
