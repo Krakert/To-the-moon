@@ -1,0 +1,1 @@
+This is the project I made with the STM32 to get the ESP8266 to execute AT commands. I didn't get it to work properly, Sending UART data was do-able, but receive data from the ESP8266 was to hard. Receiving data needs to be done by a interrupt that reads a single byte and then stores this in a buffer. Later you need to read from that buffer to get the received message.
