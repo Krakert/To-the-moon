@@ -1,22 +1,17 @@
-#ifndef WIFI_H_
-#define WIFI_H_
+#ifndef wifi_H
+#define wifi_H
 
-#include <Arduino.h>
 #include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
 #include <String.h>
-#include <EEPROM.h>
 
 /* PARAMETERS STANDARD AP*/ 
 #define WIFI_AP_STANDARD_SSID           "To the Moon Setup"
 #define WIFI_AP_STANDARD_PSW            "12345678"
-#define WIFI_AP_STANDARD_IP              192,168,1,1
-#define WIFI_AP_STANDARD_GATEWAY         192,168,1,1
-#define WIFI_AP_STANDARD_SUBNET          255,255,255,0
-#define WIFI_AP_STANDARD_PORT            80
+#define WIFI_AP_STANDARD_IP             192,168,1,1
+#define WIFI_AP_STANDARD_GATEWAY        192,168,1,1
+#define WIFI_AP_STANDARD_SUBNET         255,255,255,0
+#define WIFI_AP_STANDARD_PORT           80
 
-/* PARAMETERS EEPROM*/
-#define STANDARD_EEPROM_SIZE             (32*2)
 
 /* FUNCTIONS SOFTAP */
 uint8_t setupSoftApConfig(IPAddress local_ip = IPAddress(WIFI_AP_STANDARD_IP), 
@@ -24,9 +19,56 @@ uint8_t setupSoftApConfig(IPAddress local_ip = IPAddress(WIFI_AP_STANDARD_IP),
                           IPAddress subnet = IPAddress(WIFI_AP_STANDARD_SUBNET));
 uint8_t setupSoftAp(String SSID = WIFI_AP_STANDARD_SSID, String PSW = WIFI_AP_STANDARD_PSW);
 
-/* FUNCTIONS EEPROM */
-void initEeprom(uint8_t nmrOfBytes = STANDARD_EEPROM_SIZE);
-uint8_t saveApToEeprom(String apSsid, String ApPsw);
-uint8_t getConfigForEeprom(uint8_t nmrOfBytes = STANDARD_EEPROM_SIZE);
+const char INDEX_HTML_AP[] PROGMEM = R"=====(
+<!DOCTYPE html>
+<html>
+<body>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+</head>
+<style>
+    body {background-color: #E7E9EB; font-family: roboto,sans-serif; color: black;}
+    h1 {color: #1967d2; font-size: 200%;}
+    .center {text-align: center;}
+    .form {padding: 5px;}
+</style>
+<div class="center">
+    <h1>Connect to your home network</h1>
+        <form action="/get" class="form">
+            <div class="form">
+                Network name: <input type="text" name="ssidFromAp">
+            </div>
+            <div class="form">
+                Password: <input type="text" name="passwordFromAp">
+            </div>
+            <input type="submit" value="Submit">
+        </form> 
+</div>
+</body>
+</html>
+)=====";
 
-#endif
+const char INDEX_HTML_AP_SUCCES[] PROGMEM = R"=====(
+<!DOCTYPE html>
+<html>
+<body>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+</head>
+<style>
+    body {background-color: #E7E9EB; font-family: roboto,sans-serif; color: black;}
+    h1 {color: #1967d2; font-size: 200%;}
+    .center {text-align: center;}
+    .form {padding: 5px;}
+</style>
+<div class="center">
+    <h1>All data is saved!</h1>
+    <p>The device will try to connect to the network you entered</p>
+</div>
+</body>
+</html>
+)=====";
+
+#endif // wifi_H
