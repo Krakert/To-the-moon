@@ -12,10 +12,10 @@
 
 /* FUNCTIONS EEPROM */
 void initEeprom(uint8_t nmrOfBytes = BYTES_NEEDED_FROM_EEPROM);
-uint8_t saveApToEeprom(String apSsid, String ApPsw);
+uint8_t saveApToEeprom(String apSsid, String ApPsw, uint8_t debug = false);
 uint8_t** getConfigForEeprom(uint8_t nmrOfBytes = BYTES_NEEDED_FROM_EEPROM);
 void dumbDataEeprom(uint8_t** valuesOutEeprom, uint8_t raw = false);
 void clearEeprom(uint8_t nmrOfBytes = BYTES_NEEDED_FROM_EEPROM);
 uint8_t checkIfNotEmpty(uint8_t** valuesOutEeprom);
-
+char * extractParameter(uint8_t** valuesOutEeprom, uint8_t parameter);
 #endif // eeprom_handler_H
