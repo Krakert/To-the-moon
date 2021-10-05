@@ -166,6 +166,8 @@ uint8_t checkIfNotEmpty(uint8_t** valuesOutEeprom){
   @brief    extract a parameter from the EEPROM and return it.
   @param    valuesOutEeprom         uint8_t**: pointer to a uint8_t 2D array
   @param    parameter               uint8_t**: 0) first, 1) second parameter of  
+  @return   intToCharSsid /         char[32]: 32 char, only filled if not null
+            intToCharPsw            char[32]: 32 char, only filled if not null
 */
 /**************************************************************************/
 char * extractParameter(uint8_t** valuesOutEeprom, uint8_t parameter){

@@ -5,12 +5,12 @@
 #include <String.h>
 
 /* PARAMETERS STANDARD AP*/ 
-#define WIFI_AP_STANDARD_SSID           "To the Moon Setup"
-#define WIFI_AP_STANDARD_PSW            "12345678"
-#define WIFI_AP_STANDARD_IP             192,168,1,1
-#define WIFI_AP_STANDARD_GATEWAY        192,168,1,1
-#define WIFI_AP_STANDARD_SUBNET         255,255,255,0
-#define WIFI_AP_STANDARD_PORT           80
+const static String WIFI_AP_STANDARD_SSID =        "To the Moon Setup";
+const static String WIFI_AP_STANDARD_PSW =         "12345678";
+const static uint8_t WIFI_AP_STANDARD_IP[] =       {192,168,1,1};
+const static uint8_t WIFI_AP_STANDARD_GATEWAY[] =  {192,168,1,1};
+const static uint8_t WIFI_AP_STANDARD_SUBNET[] =   {255,255,255,0};
+const static uint8_t WIFI_AP_STANDARD_PORT =       80;
 
 
 /* FUNCTIONS SOFTAP */
