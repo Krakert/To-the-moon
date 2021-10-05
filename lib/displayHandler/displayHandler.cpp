@@ -1,5 +1,5 @@
 #include <displayHandler.h>
-
+#include <wifi.h>
 /*
 <---X axis--->
 ---------------
@@ -32,20 +32,37 @@ void displayHandler::init(uint8_t touchRotation, uint8_t screenRotation, uint8_t
 
 /**************************************************************************/
 /*!
-  @brief    Show the init screen when setting the AP (first setup)
+  @brief    Show a simple progress bar on the display
 */
 /**************************************************************************/
-void displayHandler::showInitScreenAp(){
+void displayHandler::boot(){
   tft.fillScreen(ILI9341_WHITE);
   tft.drawRect(X_OFFSET, Y_OFFSET, WIDTH, HEIGHT, ILI9341_BLACK);
+  placeTextInCenter("Loading...", X_CENTER, Y_CENTER, 3, ILI9341_BLUE);
   uint16_t i = 10;
   for (i = 10; i < 290; i = i + 10){
     tft.fillRect(X_OFFSET+1, Y_OFFSET+1, i-2, HEIGHT-2, ILI9341_GREEN);
     delay(10);
   }
-  tft.fillRect(X_OFFSET, Y_OFFSET, i, HEIGHT, ILI9341_WHITE);
-  placeTextInCenter("Setup is done", (DISPLAY_X_MAX / 2), Y_OFFSET, 3, ILI9341_BLUE);
+}
+
+/**************************************************************************/
+/*!
+  @brief    Show the init screen when the AP is setup (first setup)
+*/
+/**************************************************************************/
+void displayHandler::showInitScreenAp(){
+  tft.fillRect(X_OFFSET, Y_OFFSET, 290, Y_CENTER + 20, ILI9341_WHITE);
+  placeTextInCenter("Setup the device", (X_CENTER), Y_OFFSET, 3, ILI9341_BLUE);
   tft.drawLine(10, (Y_OFFSET + (HEIGHT / 2)), (DISPLAY_X_MAX - 10),(Y_OFFSET + (HEIGHT / 2)), ILI9341_BLACK);
+  placeTextInCenter("Connect to wifi point:", X_CENTER, 80, 2, ILI9341_BLACK);
+  placeTextInCenter(WIFI_AP_STANDARD_SSID, X_CENTER, 105, 2, ILI9341_BLUE);
+  String text = "Using password:" + String(WIFI_AP_STANDARD_PSW);
+  placeTextInCenter(text, X_CENTER, 130, 2, ILI9341_BLACK);
+  text = "Go to:" + String(WIFI_AP_STANDARD_IP[0]) +  "." + String(WIFI_AP_STANDARD_IP[1]) + "." + String(WIFI_AP_STANDARD_IP[2]) + "." + String(WIFI_AP_STANDARD_IP[3]);
+  placeTextInCenter(text, X_CENTER, 155, 2, ILI9341_BLACK);
+  placeTextInCenter("Here enter the data to", X_CENTER, 180, 2, ILI9341_BLACK);
+  placeTextInCenter("Connect to your own wifi", X_CENTER, 205, 2, ILI9341_BLACK);
 }
 
 /**************************************************************************/
