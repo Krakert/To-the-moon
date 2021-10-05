@@ -18,6 +18,8 @@
 /* DEFINE MAX SCREEN SIZE */
 #define DISPLAY_X_MAX       320 
 #define DISPLAY_Y_MAX       240 
+#define X_CENTER            DISPLAY_X_MAX / 2
+#define Y_CENTER            DISPLAY_Y_MAX / 2 
 
 /* SETUP STANDAARD COLOR AND SIZE */
 #define STANDARD_TEXT_SIZE  2
@@ -36,6 +38,7 @@ class displayHandler {
     Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC, TFT_RST);
     XPT2046_Touchscreen ts = XPT2046_Touchscreen(TS_CS);
     public:
+        void boot();
         void showInitScreenAp(); 
 
         const uint16_t displayXSize = DISPLAY_X_MAX;
