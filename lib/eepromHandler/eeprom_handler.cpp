@@ -57,7 +57,7 @@ uint8_t saveApToEeprom(String apSsid, String ApPsw, uint8_t debug){
     }
     EEPROM.commit();
     if (debug){
-        dumbDataEeprom(getConfigForEeprom(32));
+        dumbDataEeprom(getConfigFormEeprom(32));
     }
     return res;
 }
