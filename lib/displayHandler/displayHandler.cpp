@@ -59,7 +59,10 @@ void displayHandler::showInitScreenAp(){
   placeTextInCenter(WIFI_AP_STANDARD_SSID, X_CENTER, 105, 2, ILI9341_BLUE);
   String text = "Using password:" + String(WIFI_AP_STANDARD_PSW);
   placeTextInCenter(text, X_CENTER, 130, 2, ILI9341_BLACK);
-  text = "Go to:" + String(WIFI_AP_STANDARD_IP[0]) +  "." + String(WIFI_AP_STANDARD_IP[1]) + "." + String(WIFI_AP_STANDARD_IP[2]) + "." + String(WIFI_AP_STANDARD_IP[3]);
+  text = "Go to:" + String(WIFI_AP_STANDARD_IP[0]) + "." 
+                  + String(WIFI_AP_STANDARD_IP[1]) + "." 
+                  + String(WIFI_AP_STANDARD_IP[2]) + "." 
+                  + String(WIFI_AP_STANDARD_IP[3]);
   placeTextInCenter(text, X_CENTER, 155, 2, ILI9341_BLACK);
   placeTextInCenter("Here enter the data to", X_CENTER, 180, 2, ILI9341_BLACK);
   placeTextInCenter("Connect to your own wifi", X_CENTER, 205, 2, ILI9341_BLACK);
