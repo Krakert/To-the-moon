@@ -37,3 +37,64 @@ uint8_t setupSoftAp(String SSID, String PSW){
         return 0;  
     }
 }
+
+/**************************************************************************/
+/*!
+  @brief    Functions that return 404, when navigate to a unknown page
+*/
+/**************************************************************************/
+void handleNotFound(AsyncWebServerRequest *request){
+    if (Serial){
+        Serial.println("function: handleNotFound");
+    }
+    request->send(404, "text/plain", "404: Not found");
+}
+
+/**************************************************************************/
+/*!
+  @brief    Show the home page, when in STA mode 
+*/
+/**************************************************************************/
+void handleOnHomeSTA(AsyncWebServerRequest *request){
+    if (Serial){
+        Serial.println("function: handleOnHomeSTA");
+    }
+    request->send_P(200, "text/html", "Hello");
+}
+
+/**************************************************************************/
+/*!
+  @brief    Show the home page, when in AP mode 
+*/
+/**************************************************************************/
+void handleOnHomeAP(AsyncWebServerRequest *request){
+    if (Serial){
+        Serial.println("function: handleOnHomeAP");
+    }
+    request->send_P(200, "text/html", INDEX_HTML_AP);
+}
+
+/**************************************************************************/
+/*!
+  @brief    Functions saves the parameter of the webserver to the EEPROM 
+*/
+/**************************************************************************/
+void handleGetDataAP(AsyncWebServerRequest *request){
+    if (Serial){
+        Serial.println("function: handleGetDataAP");
+      }
+      String ssidToSave, pswToSave;
+      if (request->hasParam("ssidFromAp")) {
+        ssidToSave = request->getParam("passwordFromAp")->value();
+      } if (request->hasParam("passwordFromAp")) {
+        pswToSave = request->getParam("passwordFromAp")->value();
+      }
+      if (saveApToEeprom(ssidToSave, pswToSave, true) == 0){
+        request->send(200, "text/html", INDEX_HTML_AP_SUCCES);
+      } else {
+          if (Serial){
+                Serial.println("Something went wrong");
+          }
+        request->send(200, "text/plain", "something went wrong, please restart and retry");
+      }
+}

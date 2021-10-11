@@ -2,7 +2,9 @@
 #define wifi_H
 
 #include <ESP8266WiFi.h>
+#include <ESPAsyncWebServer.h>
 #include <String.h>
+#include <eepromHandler.h>
 
 /* PARAMETERS STANDARD AP*/ 
 const static String WIFI_AP_STANDARD_SSID =        "To the Moon Setup";
@@ -18,6 +20,16 @@ uint8_t setupSoftApConfig(IPAddress local_ip = IPAddress(WIFI_AP_STANDARD_IP),
                           IPAddress gateway = IPAddress(WIFI_AP_STANDARD_GATEWAY),
                           IPAddress subnet = IPAddress(WIFI_AP_STANDARD_SUBNET));
 uint8_t setupSoftAp(String SSID = WIFI_AP_STANDARD_SSID, String PSW = WIFI_AP_STANDARD_PSW);
+
+/* IF NAVIGATED TO A UNKNOW PAGE */
+void handleNotFound(AsyncWebServerRequest *request);
+
+/* FUNCTIONS SERVER REQUEST, STA MODE */
+void handleOnHomeSTA(AsyncWebServerRequest *request);
+
+/* FUNCTIONS SERVER REQUEST, AP MODE */
+void handleOnHomeAP(AsyncWebServerRequest *request);
+void handleGetDataAP(AsyncWebServerRequest *request);
 
 const char INDEX_HTML_AP[] PROGMEM = R"=====(
 <!DOCTYPE html>
@@ -70,5 +82,6 @@ const char INDEX_HTML_AP_SUCCES[] PROGMEM = R"=====(
 </body>
 </html>
 )=====";
+
 
 #endif // wifi_H
