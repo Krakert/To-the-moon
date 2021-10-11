@@ -1,5 +1,5 @@
-#ifndef eeprom_handler_H
-#define eeprom_handler_H
+#ifndef EEPROMHANDLER_H
+#define EEPROMHANDLER_H
 
 #include <HardwareSerial.h>
 #include <String.h>
@@ -18,4 +18,4 @@ void dumbDataEeprom(uint8_t** valuesOutEeprom, uint8_t raw = false);
 void clearEeprom(uint8_t nmrOfBytes = BYTES_NEEDED_FROM_EEPROM);
 uint8_t checkIfNotEmpty(uint8_t** valuesOutEeprom);
 char * extractParameter(uint8_t** valuesOutEeprom, uint8_t parameter);
-#endif // eeprom_handler_H
+#endif // EEPROMHANDLER_H

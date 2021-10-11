@@ -1,4 +1,4 @@
-#include <eeprom_handler.h>
+#include <eepromHandler.h>
 /**************************************************************************/
 /*!
   @brief    Set up A piece of the flash in the EEPROM
@@ -57,7 +57,7 @@ uint8_t saveApToEeprom(String apSsid, String ApPsw, uint8_t debug){
     }
     EEPROM.commit();
     if (debug){
-        dumbDataEeprom(getConfigFormEeprom(32));
+        dumbDataEeprom(getConfigFormEeprom(PARAMETER_SIZE_IN_BYTES));
     }
     return res;
 }
@@ -107,7 +107,7 @@ void dumbDataEeprom(uint8_t** valuesOutEeprom, uint8_t raw){
         for (uint8_t i = 0; i < PARAMETERS_EEPROM; i++){
             for (uint8_t j = 0; j < PARAMETER_SIZE_IN_BYTES; j++){
                 if (raw){
-                    Serial.print(valuesOutEeprom[i][j]);
+                    Serial.print(valuesOutEeprom[i][j], HEX);
                 } else {
                     intToChar[j] = valuesOutEeprom[i][j];
                     Serial.print(intToChar[j]);
@@ -145,7 +145,7 @@ void clearEeprom(uint8_t nmrOfBytes){
 */
 /**************************************************************************/
 uint8_t checkIfNotEmpty(uint8_t** valuesOutEeprom){
-    char intToChar[32] = { 0 };
+    char intToChar[PARAMETER_SIZE_IN_BYTES] = { 0 };
     uint8_t res = 0;
     if (Serial){
         Serial.println("Class eeprom_handler, function: checkIfNotEmpty");
@@ -171,8 +171,8 @@ uint8_t checkIfNotEmpty(uint8_t** valuesOutEeprom){
 */
 /**************************************************************************/
 char * extractParameter(uint8_t** valuesOutEeprom, uint8_t parameter){
-    static char intToCharSsid[32] = { 0 };
-    static char intToCharPsw[32] = { 0 };
+    static char intToCharSsid[PARAMETER_SIZE_IN_BYTES] = { 0 };
+    static char intToCharPsw[PARAMETER_SIZE_IN_BYTES] = { 0 };
     if (Serial){
         Serial.println("Class eeprom_handler, function: extractParameter");
     }
