@@ -11,9 +11,6 @@
 #include <eepromHandler.h>
 #include <requestHandler.h>
 
-const char* PARAM_INPUT_1_AP = "ssidFromAp";
-const char* PARAM_INPUT_2_AP = "passwordFromAp";
-
 uint8_t STATION = false;
 
 displayHandler display;

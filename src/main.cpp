@@ -42,7 +42,6 @@ void setup()
       STATION = true;
 
       server.on("/", HTTP_GET, handleOnHomeSTA);
-      
       server.onNotFound(handleNotFound);
       server.begin(); 
     }
@@ -56,36 +55,16 @@ void setup()
     }
     // ! Setup AP, no data in eeprom
     #if(STANDARD_CONFIG_AP)
-      
       setupSoftApConfig();
       setupSoftAp();   
     #else
       AsyncWebServer server(WIFI_AP_PORT); 
       setupSoftApConfig(LOCAL_IP, GATEWAY, SUBNET);
       setupSoftAp(WIFI_AP_SSID, WIFI_AP_P SW);
-
     #endif
 
-    delay(100);
     server.on("/", HTTP_GET, handleOnHomeAP);
-
-    server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
-      if (Serial){
-        Serial.println("function: serverAp.on(\"/get\"");
-      }
-      String ssidToSave, pswToSave;
-      if (request->hasParam(PARAM_INPUT_1_AP)) {
-        ssidToSave = request->getParam(PARAM_INPUT_1_AP)->value();
-      } if (request->hasParam(PARAM_INPUT_2_AP)) {
-        pswToSave = request->getParam(PARAM_INPUT_2_AP)->value();
-      }
-      if (saveApToEeprom(ssidToSave, pswToSave, true) == 0){
-        request->send(200, "text/html", INDEX_HTML_AP_SUCCES);
-      } else {
-        Serial.println("Something went wrong");
-      }
-    });
-
+    server.on("/get", HTTP_GET, handleGetDataAP);
     server.onNotFound(handleNotFound);
     server.begin();  
     display.boot(); 
