@@ -1,5 +1,5 @@
-#ifndef wifi_H
-#define wifi_H
+#ifndef WIFIHANDLER_H
+#define WIFIHANDLER_H
 
 #include <ESP8266WiFi.h>
 #include <ESPAsyncWebServer.h>
@@ -26,6 +26,7 @@ void handleNotFound(AsyncWebServerRequest *request);
 
 /* FUNCTIONS SERVER REQUEST, STA MODE */
 void handleOnHomeSTA(AsyncWebServerRequest *request);
+void handleOnHomeSTACSS(AsyncWebServerRequest *request);
 
 /* FUNCTIONS SERVER REQUEST, AP MODE */
 void handleOnHomeAP(AsyncWebServerRequest *request);
@@ -84,4 +85,4 @@ const char INDEX_HTML_AP_SUCCES[] PROGMEM = R"=====(
 )=====";
 
 
-#endif // wifi_H
+#endif // WIFIHANDLER_H

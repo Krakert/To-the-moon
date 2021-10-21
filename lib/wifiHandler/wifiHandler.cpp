@@ -1,4 +1,5 @@
-#include <wifi.h>
+#include <wifiHandler.h>
+#include <LittleFS.h>
 /**************************************************************************/
 /*!
   @brief    Configure the soft access point’s network interface.
@@ -59,9 +60,16 @@ void handleOnHomeSTA(AsyncWebServerRequest *request){
     if (Serial){
         Serial.println("function: handleOnHomeSTA");
     }
-    request->send_P(200, "text/html", "Hello");
+    request->send(LittleFS, "/serverMain.html", String());
 }
 
+void handleOnHomeSTACSS(AsyncWebServerRequest *request){
+      if (Serial){
+        Serial.println("function: handleOnHomeSTACSS");
+    }
+    request->send(LittleFS, "/server.css", "text/css");
+}
+ 
 /**************************************************************************/
 /*!
   @brief    Show the home page, when in AP mode 
