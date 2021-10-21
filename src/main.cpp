@@ -6,16 +6,17 @@ void setup()
   Serial.println();
   initEeprom();
   display.init();
+  LittleFS.begin();
 
   // String ssid = "stefan";  
   // String psw = "dekraker";
-  // String ssid = "Huisdekraker";
-  // String psw = "FAGHPTB438FQ";
-  String ssid = "pvstsdkjdk";
-  String psw = "KKCA6TBV8TA7";
+  String ssid = "Huisdekraker";
+  String psw = "FAGHPTB438FQ";
+  // String ssid = "pvstsdkjdk";
+  // String psw = "KKCA6TBV8TA7";
 
   saveApToEeprom(ssid, psw);
-  // TODO make reset fucntion, if GPIO IS high clear eeprom
+  // TODO make reset function, if GPIO IS high clear eeprom
   // clearEeprom();
 
   /* GET DATA OF THE EEPROM AND DUMP IT VIA SERIAL */
@@ -41,7 +42,8 @@ void setup()
       Serial.println(WiFi.localIP());
       STATION = true;
 
-      server.on("/", HTTP_GET, handleOnHomeSTA);
+      server.on("/", HTTP_GET, handleOnHomeSTA); 
+      server.on("/server.css", HTTP_GET, handleOnHomeSTACSS);
       server.onNotFound(handleNotFound);
       server.begin(); 
     }

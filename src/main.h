@@ -1,12 +1,12 @@
 #ifndef MAIN_H
 #define MAIN_H
-#include "LittleFS.h"
+#include <LittleFS.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 
 
 /* ADDED HEADER FILES SELFMADE */
-#include <wifi.h>
+#include <wifiHandler.h>
 #include <displayHandler.h>
 #include <eepromHandler.h>
 #include <requestHandler.h>
