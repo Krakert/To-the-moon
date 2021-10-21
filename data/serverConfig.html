@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <title>Settings</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="server.css">
+    <!-- Boxicons CDN Link -->
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <section class="home-section">
+        <div class="sidebar">
+            <ul class="nav-list">
+                <li>
+                    <a href="#">
+                        <i id="Dashboard" class='bx bx-grid-alt'></i>
+                        <span class="links_name">Dashboard </span>
+                    </a>
+                    <span class="tooltip">Dashboard</span>
+                </li>
+                <li>
+                    <a href="#">
+                        <i id="Analytics" class='bx bx-pie-chart-alt-2'></i>
+                        <span class="links_name">Analytics</span>
+                    </a>
+                    <span class="tooltip">Analytics</span>
+                </li>
+                <li>
+                    <a href="#">
+                        <i id="Setting" class='bx bx-cog'></i>
+                        <span class="links_name">Setting</span>
+                    </a>
+                    <span class="tooltip">Setting</span>
+                </li>
+            </ul>
+        </div>
+
+        <header class="text">Setting</header>
+        <header>
+            <div class="home-section-block-left">
+                <div class="text">
+                    Add coin
+                </div>
+                <div class="text">
+                    <input id="userInputCoin" type="text" field>
+                </div>
+                <div>
+                    <button id="submitCoin" type="submit">Add coin to list</button>
+                </div>
+            </div>
+            <div class="home-section-block-right">
+                <div class="text">
+                    list of coins
+                </div>
+            </div>
+        </header>
+    </section>
+
+    <script type="text/javascript">
+        document.getElementById("Dashboard").onclick = function () {
+            window.location.href = "serverMain.html";
+        };
+
+        document.getElementById("submitCoin").onclick = function () {
+            httpGet(document.getElementById("userInputCoin").value)
+        }
+
+        function httpGet(theUrl) {
+            const Http = new XMLHttpRequest();
+            const url='http://api.iot.hva-robots.nl/crypto/';
+            Http.open("GET", url + theUrl + "?cors");
+            Http.send();
+
+            Http.onreadystatechange = (e) => {
+            console.log(Http.responseText)
+}
+        }
+
+    </script>
+</body>
+
+</html>
