@@ -1,3 +1,8 @@
 *.sch-bak
 *.lib
-*fp-info-cache
+*.xml
+*.code-workspace
+*.kicad_pcb-bak
+fp-info-cache
+To_the_moon-cache.lib
+To_the_moon.sch-bak
