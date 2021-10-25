@@ -153,3 +153,7 @@
     display: none;
   }
 }
+.below {
+  float:center; 
+  clear: left;
+}
