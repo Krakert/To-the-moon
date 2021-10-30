@@ -1,6 +1,7 @@
 from flask import Flask, render_template, jsonify
 import json
-from flask_cors import CORS, cross_origin
+import datetime
+from flask_cors import CORS
 import pymysql
 
 HOST_ADDRESS = 'oege.ie.hva.nl'
@@ -22,29 +23,33 @@ connection = pymysql.connect(host = HOST_ADDRESS,
                              user = USER_NAME,
                              password = PASSWORD,
                              db = NAME_DATABASE,
-                             cursorclass = pymysql.cursors.DictCursor)
+                             cursorclass = pymysql.cursors.DictCursor,
+                             ssl={"fake_flag_to_enable_tls":True})
 
 """
 @brief      Get data from the database
 @param      query                   String: Query to send to the database
 @return     result                  Tuple:  If successful, data returned by the database, else "false"
 """
-
-
 def get(query):
     try:
         with connection.cursor() as cursor:
             cursor.execute(query)
             connection.commit()
             results = cursor.fetchall()
-            print(f"Data out database: {json.dumps(results)}")
-            return json.dumps(results)
+            print(results)
+            print(f"Data out database: {json.dumps(results, default = convertDateTime)}")
+            return json.dumps(results, default = convertDateTime)
     except Exception as e:
         print(e)
         result = "false"
     finally:
         cursor.close()
-    return result
+
+
+def convertDateTime(o):
+    if isinstance(o, datetime.datetime):
+        return o.__str__()
 
 """
 @brief      Send data from the database
@@ -92,8 +97,17 @@ def remove_coin(coinId):
 """
 @app.route('/insert/coin/<string:coinId>/<string:fullName>')
 def insert_coin(coinId, fullName): 
-    return send('call addCoin(upper(\"%s\"), \"%s\")'%(str(coinId), str(fullName)))
+    return send('call addCoin(upper(\'%s\'), \'%s\')'%(coinId, fullName))
 
+"""
+@brief      Insert data of a coin in the database	
+@param      coinId                  String: The coins id
+@param      timeStamp               String: Timestamp of the insert
+@return     price                   String: Current price of the coin
+"""
+@app.route('/insert/data/<string:coinId>/<string:timeStamp>/<string:price>')
+def insert_price(coinId, timeStamp, price):
+    return send('call addData(upper(\'%s\'), \'%s\', \'%s\')'%(coinId, timeStamp, price))
 
 """
 @brief      Check if a coin is already in the database
