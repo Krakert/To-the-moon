@@ -18,12 +18,14 @@ typedef struct {
 } namePriceTimeStruct;
 
 
+
 class requestHandler{
     
     public:
         void requestFromApi(String coinId, namePriceTimeStruct *namePriceTimeStruct, uint8_t debug);
         uint8_t requestInsertDataCoin(namePriceTimeStruct *namePriceTimeStruct, uint8_t debug);
-        uint8_t * requestGetCoinsDatabase(uint8_t debug);
+        uint8_t* requestGetCoinsDatabase(uint8_t debug);
+        uint8_t** fillArrayWithCoinIds(uint8_t* arrayOfTheCoins);
     private:
         WiFiClient clientHttpCall;    
         StaticJsonDocument<64> filter;

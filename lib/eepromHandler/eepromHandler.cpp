@@ -32,7 +32,7 @@ uint8_t saveApToEeprom(String apSsid, String ApPsw, uint8_t debug){
     uint8_t res = 0;
     
     // Clear EEPROM
-    clearEeprom(BYTES_NEEDED_FROM_EEPROM);
+    clearEeprom(FULL_AMOUNT_OF_BYTES_EEPROM);
 
     // Write SSID
     if ((uint8_t) apSsid.length() < PARAMETER_SIZE_IN_BYTES + 1){
@@ -57,7 +57,7 @@ uint8_t saveApToEeprom(String apSsid, String ApPsw, uint8_t debug){
     }
     EEPROM.commit();
     if (debug){
-        dumbDataEeprom(getConfigFormEeprom(PARAMETER_SIZE_IN_BYTES));
+        dumbDataEeprom();
     }
     return res;
 }
@@ -68,7 +68,7 @@ uint8_t saveApToEeprom(String apSsid, String ApPsw, uint8_t debug){
   @param    nmrOfBytes              uint8_t: total number of bytes of the EEPROM to read
   @return   valueEeprom             uint8_t[][]: 
                                     [0-32][]) 32 bytes, should contain SSID
-                                    [][0-32]) 32 bytes, should contain SSID
+                                    [][0-32]) 32 bytes, should contain PSW
 */
 /**************************************************************************/
 uint8_t** getConfigFormEeprom(uint8_t nmrOfBytes){
@@ -80,13 +80,13 @@ uint8_t** getConfigFormEeprom(uint8_t nmrOfBytes){
     uint8_t** valueEeprom = new uint8_t* [PARAMETERS_EEPROM];
 
     for (uint8_t i = 0; i < PARAMETERS_EEPROM; i++){
-        valueEeprom[i] = new uint8_t[BYTES_NEEDED_FROM_EEPROM];
+        valueEeprom[i] = new uint8_t[BYTES_NEEDED_FROM_EEPROM_WIFI];
     }
 
     for(uint8_t j = 0; j < PARAMETER_SIZE_IN_BYTES; j ++ ) {
         valueEeprom[0][j] = EEPROM.read(j);
     }
-    for(uint8_t k = PARAMETER_SIZE_IN_BYTES; k < BYTES_NEEDED_FROM_EEPROM; k ++ ) {
+    for(uint8_t k = PARAMETER_SIZE_IN_BYTES; k < BYTES_NEEDED_FROM_EEPROM_WIFI; k ++ ) {
         valueEeprom[1][k - PARAMETER_SIZE_IN_BYTES] = EEPROM.read(k);
     }  
 
@@ -95,31 +95,23 @@ uint8_t** getConfigFormEeprom(uint8_t nmrOfBytes){
 
 /**************************************************************************/
 /*!
-  @brief    Serial print the data read from the EEPROM
-  @param    valuesOutEeprom         uint8_t**: pointer to a uint8_t 2D array
-  @param    raw                     uint8_t: If true print the uint8_t data (ascii)
+  @brief    Serial print the data read from the EEPROM, in char form.
 */
 /**************************************************************************/
-void dumbDataEeprom(uint8_t** valuesOutEeprom, uint8_t raw){
-    char intToChar[32] = { 0 };
+void dumbDataEeprom(){
+    char intToChar[FULL_AMOUNT_OF_BYTES_EEPROM] = { 0 };
     if (Serial){
-        Serial.println("Class eeprom_handler, function: dumbDataEeprom");
-        for (uint8_t i = 0; i < PARAMETERS_EEPROM; i++){
-            for (uint8_t j = 0; j < PARAMETER_SIZE_IN_BYTES; j++){
-                if (raw){
-                    Serial.print(valuesOutEeprom[i][j], HEX);
-                } else {
-                    intToChar[j] = valuesOutEeprom[i][j];
-                    Serial.print(intToChar[j]);
-                }
-            }
-            Serial.println();
-        }   
+        Serial.println("Class eepromHandler, function: dumbData");
+        for (uint8_t i  = 0; i < BYTES_NEEDED_FROM_EEPROM_WIFI + BYTES_NEEDED_FROM_EEPROM_COINS; i++){
+            intToChar[i] = EEPROM.read(i);
+                Serial.print(intToChar[i]);
+        } 
+        Serial.println();
     }   
 }
 /**************************************************************************/
 /*!
-  @brief    Set a the bytes to '\0'
+  @brief    Clear the EEPROM data by writing '\0' to all the bytes
   @param    nmrOfBytes              uint8_t: total number of bytes of the EEPROM to clear
 */
 /**************************************************************************/
@@ -163,7 +155,8 @@ uint8_t checkIfNotEmpty(uint8_t** valuesOutEeprom){
 
 /**************************************************************************/
 /*!
-  @brief    extract a parameter from the EEPROM and return it.
+  @brief    Extract a parameter from the 2D array that contain the data of 
+            the EEPROM and return it.
   @param    valuesOutEeprom         uint8_t**: pointer to a uint8_t 2D array
   @param    parameter               uint8_t**: 0) first, 1) second parameter of  
   @return   intToCharSsid /         char[32]: 32 char, only filled if not null
@@ -192,4 +185,62 @@ char * extractParameter(uint8_t** valuesOutEeprom, uint8_t parameter){
     return intToCharPsw;    
     }
     return 0;
+}
+/**************************************************************************/
+/*!
+  @brief    Save all the coin ID to the EEPROM, compare data form API call to the EEPROM
+            Only rewrite the data that is different than in the EEPROM.
+  @param    arrayCoins              uint8_t**: pointer to a uint8_t 2D array
+  @param    debug                   uint8_t: If true print changes that are being made  
+*/
+/**************************************************************************/
+void saveCoinsToEeprom(uint8_t* arrayCoins, uint8_t debug){
+    if (Serial){
+        Serial.println("Class eepromHandler, function: saveCoinsToEeprom");
+    }
+    static char dataInEeprom[BYTES_NEEDED_FROM_EEPROM_COINS];
+
+    // get data from EEPROM
+    for (uint8_t i = 0; i < BYTES_NEEDED_FROM_EEPROM_COINS; i ++){
+        dataInEeprom[i] = EEPROM.read(i + BYTES_NEEDED_FROM_EEPROM_WIFI);
+    }
+    // compare EEPROM with data from call, if diff, write to
+    for (uint8_t j = 0; j < BYTES_NEEDED_FROM_EEPROM_COINS; j++){
+        if (dataInEeprom[j] != arrayCoins[j]){
+            if (Serial && debug){
+                Serial.println("Found diff");
+                char buffer[32];
+                sprintf(buffer, "In eeprom: %c, Byte: %d", char(dataInEeprom[j]), j + BYTES_NEEDED_FROM_EEPROM_WIFI);
+                Serial.println(buffer);
+                sprintf(buffer, "From call: %c, Byte: %d", char(arrayCoins[j]), j + BYTES_NEEDED_FROM_EEPROM_WIFI);
+                Serial.println(buffer);
+            }
+            EEPROM.write(j + BYTES_NEEDED_FROM_EEPROM_WIFI, arrayCoins[j]);
+        }
+    }
+    EEPROM.commit();
+}
+
+/**************************************************************************/
+/*!
+  @brief    Print the 2D array and list the coins.
+  @param    arrayCoins              uint8_t**: pointer to a uint8_t 2D array 
+*/
+/**************************************************************************/
+void listCoins(uint8_t** arrayOfCoins){
+    if (Serial){
+        Serial.println("Class eepromHandler, function: listCoins");
+        for (uint8_t j = 0; j < MAX_NUMBER_OF_COINS; j++){
+            static char coinName[4];
+            for (uint8_t k = 0; k < BYTES_PER_ID_COIN; k++){
+                if (arrayOfCoins[j][k] != '\0'){    
+                coinName[k] = arrayOfCoins[j][k];
+                }
+            }
+            if (strlen(coinName) > 0){
+                Serial.print(coinName);
+                Serial.println();
+            }
+        }
+    }
 }
