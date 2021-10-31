@@ -93,7 +93,7 @@ void handleGetDataAP(AsyncWebServerRequest *request){
       }
       String ssidToSave, pswToSave;
       if (request->hasParam("ssidFromAp")) {
-        ssidToSave = request->getParam("passwordFromAp")->value();
+        ssidToSave = request->getParam("ssidFromAp")->value();
       } if (request->hasParam("passwordFromAp")) {
         pswToSave = request->getParam("passwordFromAp")->value();
       }
