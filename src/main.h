@@ -14,7 +14,7 @@
 uint8_t STATION = false;
 
 displayHandler display;
-namePriceStruct infoCoin;
+namePriceTimeStruct infoCoin;
 
 #define STANDARD_CONFIG_AP   true 
 

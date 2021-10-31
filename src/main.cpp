@@ -10,18 +10,20 @@ void setup()
 
   // String ssid = "stefan";  
   // String psw = "dekraker";
-  String ssid = "Huisdekraker";
-  String psw = "FAGHPTB438FQ";
+  // String ssid = "POCO F2 Pro";  
+  // String psw = "KTMDuke69018@";
+  // String ssid = "Huisdekraker";
+  // String psw = "FAGHPTB438FQ";
   // String ssid = "pvstsdkjdk";
   // String psw = "KKCA6TBV8TA7";
 
-  saveApToEeprom(ssid, psw);
+  // saveApToEeprom(ssid, psw);
   // TODO make reset function, if GPIO IS high clear eeprom
   // clearEeprom();
 
   /* GET DATA OF THE EEPROM AND DUMP IT VIA SERIAL */
   uint8_t** valuesOutEeprom = getConfigFormEeprom();
-  dumbDataEeprom(valuesOutEeprom);
+  // dumbDataEeprom();
   /* IF FOUND TWO PARAMETERS, SETUP STATION ELSE AP */
   if (checkIfNotEmpty(valuesOutEeprom) == 2){
     if (Serial){
@@ -29,8 +31,8 @@ void setup()
     }
     // ! Start the STA mode, data valid in the eeprom
     /* GET THE PARAMETERS IN SEPAERATE VARIABLES */
-    char *ssidFromEeprom = extractParameter(valuesOutEeprom, 0);
-    char *pswFromEeprom = extractParameter(valuesOutEeprom, 1);
+    char* ssidFromEeprom = extractParameter(valuesOutEeprom, 0);
+    char* pswFromEeprom = extractParameter(valuesOutEeprom, 1);
     /* SETUP STATION MODE */
     WiFi.mode(WIFI_STA);
     /* USE DATA OUT THE EEPROM */
@@ -73,19 +75,36 @@ void setup()
   }      
         
   if (STATION) {
-    // ? Display something the boot screen if the station mode is enabled
+    // TODO Display something the boot screen if the station mode is enabled
   } else {
     display.showInitScreenAp();
   }   
-  Serial.println(STATION);       
+     
 }
 
 void loop() {
   if (STATION) {
     requestHandler httpHandler;
-    Serial.println(infoCoin.idCoin);
-    Serial.println(infoCoin.priceCoin);
-    httpHandler.requestFromApi("ADA", &infoCoin, false);
+    // 1D array
+    uint8_t* arrayCoins = httpHandler.requestGetCoinsDatabase(false);
+    saveCoinsToEeprom(arrayCoins, true);
+    dumbDataEeprom();
+    // 2D array
+    uint8_t** arrayOfCoins = httpHandler.fillArrayWithCoinIds(arrayCoins);
+    listCoins(arrayOfCoins);
+
+    for (uint8_t j = 0; j < MAX_NUMBER_OF_COINS; j++){
+      char coinName[4];
+      for (uint8_t k = 0; k < BYTES_PER_ID_COIN; k++){
+        if (arrayOfCoins[j][k] != '\0'){
+          coinName[k] = arrayOfCoins[j][k];
+        }
+      }
+      if (strlen(coinName) > 0){
+        httpHandler.requestFromApi(coinName, &infoCoin, true);
+        httpHandler.requestInsertDataCoin(&infoCoin, true);
+      }
+    }
   }
   delay(5000);
 }
