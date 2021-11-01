@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <title>Settings</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="server.css">
+    <!-- Boxicons CDN Link -->
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <section class="home-section">
+        <div class="sidebar">
+            <ul class="nav-list">
+                <li>
+                    <a href="#">
+                        <i id="Dashboard" class='bx bx-grid-alt'></i>
+                        <span class="links_name">Dashboard </span>
+                    </a>
+                    <span class="tooltip">Dashboard</span>
+                </li>
+                <li>
+                    <a href="#">
+                        <i id="Analytics" class='bx bx-pie-chart-alt-2'></i>
+                        <span class="links_name">Analytics</span>
+                    </a>
+                    <span class="tooltip">Analytics</span>
+                </li>
+                <li>
+                    <a href="#">
+                        <i id="Setting" class='bx bx-cog'></i>
+                        <span class="links_name">Setting</span>
+                    </a>
+                    <span class="tooltip">Setting</span>
+                </li>
+            </ul>
+        </div>
+
+        <header class="text">Setting</header>
+        <header>
+            <div class="home-section-block-left">
+                <div class="text">
+                    Add coin
+                </div>
+                <div class="text">
+                    <input id="userInputCoin" type="text" field>
+                </div>
+                <div>
+                    <button id="submitCoin" type="submit">Add coin to list</button>
+                </div>
+            </div>
+            <div class="home-section-block-right">
+                <div class="text">
+                    list of coins
+                </div>
+                <p id="listInDb" class="list"></p>
+            </div>
+        </header>
+    </section>
+
+    <script type="text/javascript">
+
+        setupListCoins('http://oege.ie.hva.nl:8112/get/coins');
+
+        document.getElementById("Dashboard").onclick = function () {
+            window.location.href = "serverMain.html";
+        };
+
+        document.getElementById("submitCoin").onclick = function () {
+            if (document.getElementById("userInputCoin").value.length == 0) {
+                alert("Voer een coin ID in.");
+            } else {
+                checkCoinAndAdd(document.getElementById("userInputCoin").value);
+            }
+        };
+
+        /*
+        @brief      Make call and check if coin is available, if so add to DB 
+        @param      coinId                  String: the id of the coin to check
+        @return     None                    alert: popup, coin is not found 
+        */
+        async function checkCoinAndAdd(coinId) {
+            const urlBase = 'http://api.iot.hva-robots.nl/crypto/#?cors';
+            const response = await fetch(urlBase.replace('#', coinId.toUpperCase()));
+            const coinExists = await response.json();
+            if (coinExists.success == true) {
+                sendDb('http://oege.ie.hva.nl:8112/insert/coin/' + coinExists.data.id + "/" + coinExists.data.name);
+                setTimeout(function () {
+                    location.reload();
+                }, 500);
+            } else {
+                alert("Coin kon niet worden gevonden, probeer opnieuw");
+            }
+        };
+
+        /*
+        @brief      Do a http GET call to the DB and plot list of coins
+        @param      url                     String: the url for the call
+        @return     None
+        */
+        function setupListCoins(url) {
+            const Http = new XMLHttpRequest();
+            Http.responseType = 'json';
+            Http.open("GET", url, true);
+            Http.send(null);
+            Http.onload = function (e) {
+                if (Http.readyState === 4 && Http.status === 200) {
+                    let jsonResponse = Http.response;
+                    for (let i = 0; i < jsonResponse.length; i++) {
+                        // For each coin make a div, add text, button with onclick event.
+                        row = document.createElement('div');
+                        row.setAttribute("id", "coin_" + i);
+                        row.setAttribute("class", "below");
+                        row.innerHTML = jsonResponse[i].coin_id + ", " + jsonResponse[i].full_name;
+                        document.getElementById("listInDb").appendChild(row);
+                        button = document.createElement("button");
+                        button.setAttribute("id", "coin_" + i + "_remove");
+                        button.innerHTML = "Remove coin";
+                        setupListener(button, "coin_" + i);
+                        document.getElementById("coin_" + i).appendChild(button);
+                    }
+                }
+            }
+        };
+
+
+        /*
+        @brief      Create the onclick event, remove from DB onclick
+        @param      button                  Object: the object that gets a onclick
+        @param      id                      String: the ID of the button (is used to get the coin ID) 
+        @return     None
+        */
+        function setupListener(button, id) {
+            button.addEventListener("click", function () {
+                let name = document.getElementById(id).textContent.split(",");
+                sendDb("http://oege.ie.hva.nl:8112/remove/coin/" + name[0]);
+                setTimeout(function () {
+                    location.reload();
+                }, 500);
+            });
+        }
+        /*
+        @brief      Do a http GET call to a url (in this case to the DB)
+        @param      url                     String: the url for the call
+        @return     None
+        */
+        function sendDb(url) {
+            const Http = new XMLHttpRequest();
+            Http.responseType = 'json';
+            Http.open("GET", url, true);
+            Http.send(null);
+        }
+    </script>
+</body>
+
+</html>
