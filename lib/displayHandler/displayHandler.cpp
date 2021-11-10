@@ -36,7 +36,7 @@ void displayHandler::init(uint8_t touchRotation, uint8_t screenRotation, uint8_t
 */
 /**************************************************************************/
 void displayHandler::boot(){
-  tft.fillScreen(ILI9341_WHITE);
+  tft.fillScreen(ILI9341_BLACK);
   tft.drawRect(X_OFFSET, Y_OFFSET, WIDTH, HEIGHT, ILI9341_BLACK);
   placeTextInCenter("Loading...", X_CENTER, Y_CENTER, 3, ILI9341_BLUE);
   uint16_t i = 10;
@@ -72,15 +72,15 @@ void displayHandler::showInitScreenAp(){
 /*!
   @brief    Place text in the center of a X an Y coordinate
   @param    textBuf                 const String: pointer to a String
-  @param    x                       uint16_t:     The X coordinate
-  @param    y                       uint16_t:     The Y coordinate
+  @param    x                       int16_t:      The X coordinate
+  @param    y                       int16_t:      The Y coordinate
   @param    textSize                uint8_t:      The text size
   @param    textColor               uint16_t:     The color of the text
   @return   size                    uint16_t[0]:  The width of the text
                                     uint16_t[1]:  The height of the text
 */
 /**************************************************************************/
-uint16_t * displayHandler::placeTextInCenter(const String &textBuf, uint16_t x, uint16_t y, uint8_t textSize, uint16_t textColor){
+uint16_t * displayHandler::placeTextInCenter(const String &textBuf, int16_t x, int16_t y, uint8_t textSize, uint16_t textColor){
     int16_t x1, y1;
     static uint16_t size[2] = {0, 0};
     tft.setTextSize(textSize);
@@ -94,15 +94,135 @@ uint16_t * displayHandler::placeTextInCenter(const String &textBuf, uint16_t x, 
 /**************************************************************************/
 /*!
   @brief    Place a rectangular in the center of a X an Y coordinate
-  @param    x                       uint16_t: X coordinate of the center of the rectangle
-  @param    Y                       uint16_t: Y coordinate of the center of the rectangle
-  @param    w                       uint16_t: Width of the rectangle
-  @param    h                       uint16_t: Height of the rectangle
+  @param    x                       int16_t:  X coordinate of the center of the rectangle
+  @param    Y                       int16_t:  Y coordinate of the center of the rectangle
+  @param    w                       int16_t:  Width of the rectangle
+  @param    h                       int16_t:  Height of the rectangle
+  @param    color                   uint16_t: Color of the rectangle
+  @param    fill                    uint8_8:  fill if true, else not
+*/
+/**************************************************************************/
+void displayHandler::placeBoxtInCenter(int16_t x,  int16_t y, int16_t w, int16_t h, uint16_t color, uint8_t fill){
+  if (fill){
+    tft.fillRect((x - (w / 2)), (y - (h / 2)), w, h , color);
+  } else {
+    tft.drawRect((x - (w / 2)), (y - (h / 2)), w, h , color);
+  }
+}
+
+/**************************************************************************/
+/*!
+  @brief    Place a triangle and save a box that represents the touch area
+  @param    x0                      int16_t: Vertex #0 y coordinate
+  @param    Y0                      int16_t: Vertex #1 x coordinate
+  @param    x1                      int16_t: Vertex #1 x coordinate
+  @param    y1                      int16_t: Vertex #1 y coordinate
+  @param    X2                      int16_t: Vertex #2 x coordinate
+  @param    y2                      int16_t: Vertex #2 y coordinate
+  @param    sizeButtonStruct        sizeButtonStruct: Pointer to struct to save data
   @param    color                   uint16_t: Color of the rectangle
 */
 /**************************************************************************/
-void displayHandler::placeBoxtInCenter(uint16_t x,  uint16_t y, uint16_t w, uint16_t h, uint16_t color){
-    tft.drawRect((x - (w / 2)), (y - (h / 2)), w, h , color);
+void displayHandler::drawTriangleButton(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, sizeButtonStruct *sizeButtonStruct, uint16_t  color){
+  tft.fillTriangle(x0, y0, x1, y1, x2, y2, color);
+  uint16_t width, height;
+  height = y1 - y2;
+  if (x0 < x1 ){
+    width = x1 - x0; 
+    sizeButtonStruct->X = x0 - TS_BOX_OFFSET;
+    sizeButtonStruct->Y = y0 - ((height / 2) + TS_BOX_OFFSET);
+    sizeButtonStruct->W = width + (TS_BOX_OFFSET * 2);
+    sizeButtonStruct->H = height + (TS_BOX_OFFSET * 2);
+    // offset the x0 point from the right center to top left
+  } else {
+    width = x0 - x1;
+    sizeButtonStruct->X = x0 - (TS_BOX_OFFSET + width);
+    sizeButtonStruct->Y = y0 - (height / 2) - TS_BOX_OFFSET;
+    sizeButtonStruct->W = (width +  (TS_BOX_OFFSET * 2));
+    sizeButtonStruct->H = height + (TS_BOX_OFFSET * 2);
+  }
+}
+ 
+/**************************************************************************/
+/*!
+  @brief    Place a rectangle and save a box that represents the touch area
+  @param    x0                      int16_t: Vertex #0 y coordinate
+  @param    Y0                      int16_t: Vertex #1 x coordinate
+  @param    w                       int16_t: Width of the rectangle
+  @param    h                       int16_t: Height of the rectangle
+  @param    sizeButtonStruct        sizeButtonStruct: Pointer to struct to save data
+  @param    color                   uint16_t: Color of the rectangle
+*/
+/**************************************************************************/
+void displayHandler::drawRectButton(int16_t x, int16_t y, int16_t w, int16_t h, sizeButtonStruct *sizeButtonStruct, uint16_t  color){
+  tft.fillRect(x, y, w, h, color);
+  sizeButtonStruct->X = x + TS_BOX_OFFSET;
+  sizeButtonStruct->Y = y + TS_BOX_OFFSET;
+  sizeButtonStruct->W = w - (TS_BOX_OFFSET * 2);
+  sizeButtonStruct->H = h - (TS_BOX_OFFSET * 2);
+  tft.fillRect(sizeButtonStruct->X, sizeButtonStruct->Y, sizeButtonStruct->W, sizeButtonStruct->H, color);
+}
+
+/**************************************************************************/
+/*!
+  @brief    Place a rectangle and save a box that represents the touch area
+  @param    x0                      int16_t: Vertex #0 y coordinate
+  @param    Y0                      int16_t: Vertex #1 x coordinate
+  @param    w                       int16_t: Width of the rectangle
+  @param    h                       int16_t: Height of the rectangle
+  @param    sizeButtonStruct        sizeButtonStruct: Pointer to struct to save data
+  @param    color                   uint16_t: Color of the rectangle
+*/
+/**************************************************************************/
+void displayHandler::drawGraph(dataGraphStruct *dataGraphStruct, uint16_t x, uint16_t y, uint16_t w, uint16 h, uint8_t offset){
+
+  dataGraphStruct->maxMin[0] = dataGraphStruct->rawXAxis[0];
+  for (int i = 0; i < 8; i++) {
+    if (dataGraphStruct->maxMin[0] < dataGraphStruct->rawXAxis[i])
+      dataGraphStruct->maxMin[0] = dataGraphStruct->rawXAxis[i];
+  }
+  dataGraphStruct->maxMin[1] = dataGraphStruct->rawXAxis[0];
+  for (int i = 0; i < 8; i++) {
+    if (dataGraphStruct->maxMin[1] > dataGraphStruct->rawXAxis[i])
+      dataGraphStruct->maxMin[1] = dataGraphStruct->rawXAxis[i];
+  }
+
+  for (int i = 0; i < 8; i++) {
+    dataGraphStruct->Yaxis[i] = mapDouble(dataGraphStruct->rawXAxis[i], dataGraphStruct->maxMin[1], dataGraphStruct->maxMin[0], offset, h - offset);
+  }
+
+  uint8_t stepSize = w / 7;
+  for (int i = 0; i < 8; i++) {
+    if (i == 0){
+      dataGraphStruct->Xaxis[i] = x;
+    } else {
+      dataGraphStruct->Xaxis[i] = (x + (i * stepSize));
+    }
+  }
+
+  for (int i = 0; i < 7; i++) {
+    if (dataGraphStruct->Yaxis[i] < dataGraphStruct->Yaxis[(i + 1)]){
+      tft.drawLine(dataGraphStruct->Xaxis[i], y - dataGraphStruct->Yaxis[i],dataGraphStruct->Xaxis[(i + 1)], y - dataGraphStruct->Yaxis[(i + 1)], ILI9341_GREEN);
+    } else {
+      tft.drawLine(dataGraphStruct->Xaxis[i], y - dataGraphStruct->Yaxis[i],dataGraphStruct->Xaxis[(i + 1)], y - dataGraphStruct->Yaxis[(i + 1)], ILI9341_RED);
+    }
+  }
+  tft.drawLine(x,y,x,y-h,ILI9341_WHITE);
+  tft.drawLine(x,y,x+w,y,ILI9341_WHITE);
+}
+
+void displayHandler::clear(int color){
+  tft.fillScreen(color);
+}
+
+uint8_t displayHandler::checkIfPressed(sizeButtonStruct *sizeButtonStruct, uint16_t x, uint16_t y){
+  int16_t x1,y1;
+  x1 = sizeButtonStruct->X + sizeButtonStruct->W;
+  y1 = sizeButtonStruct->Y + sizeButtonStruct->H;
+  if ((sizeButtonStruct->X <= x && x <= x1) && (sizeButtonStruct->Y <= y && y <= y1)){
+    return 1;
+  }
+  return 0;
 }
 
 /**************************************************************************/
@@ -133,3 +253,11 @@ void displayHandler::setToDefault(){
     tft.setTextColor(displayHandler::textColor);
 }
 
+/**************************************************************************/
+/*!
+  @brief    Remade version of the map function to return a double instead of a int
+*/
+/**************************************************************************/
+double displayHandler::mapDouble(double value, double in_min, double in_max, double out_min, double out_max){
+  return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
