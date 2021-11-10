@@ -37,7 +37,6 @@ def get(query):
             cursor.execute(query)
             connection.commit()
             results = cursor.fetchall()
-            print(results)
             print(f"Data out database: {json.dumps(results, default = convertDateTime)}")
             return json.dumps(results, default = convertDateTime)
     except Exception as e:
@@ -70,14 +69,6 @@ def send(query):
     return result
 
 """
-@brief      Get all data of table DataCoins
-@return     result                  String: If successful, data from the database, else "false" 
-"""
-@app.route('/get')
-def get_all_data(): 
-    return str(get('SELECT * FROM `DataCoins`'))
-
-"""
 @brief      Get all coins from the database
 @return     result                  String: If successful, data from the database, else "false"
 """
@@ -87,7 +78,7 @@ def get_all_data_coin():
 
 @app.route('/remove/coin/<string:coinId>')
 def remove_coin(coinId): 
-    return send('DELETE FROM Coins WHERE coin_id = upper(\"%s\")' %(str(coinId)))
+    return send('DELETE FROM Coins WHERE coin_id = upper(\"%s\")' %(coinId))
 
 """
 @brief      Insert if not already in database
@@ -116,7 +107,15 @@ def insert_price(coinId, timeStamp, price):
 """
 @app.route('/get/coin/<string:coinId>')
 def checkIfCoinThere(coinId):
-    result = str(get('SELECT coin_id FROM Coins WHERE coin_id = upper(\"%s\")'%str(coinId)))
+    result = str(get('SELECT coin_id FROM Coins WHERE coin_id = upper(\"%s\")'%coinId))
+    if result == "()":
+        return "false"
+    else:
+        return result
+
+@app.route('/get/<string:coinId>')
+def getPriceCoin(coinId):
+    result = str(get('call getData(upper(\'%s\'))'%coinId))
     if result == "()":
         return "false"
     else:
