@@ -11,10 +11,28 @@
 #include <eepromHandler.h>
 #include <requestHandler.h>
 
-uint8_t STATION = false;
+unsigned long previousMillis = 0;        
 
+#define INTERVAL_UPDATE 1000*60*5.5
+
+uint8_t STATION = false;
+uint8_t FIRSTRUN = true;
+uint8_t tsPressed = false;
+uint8_t tsReleased = false;
+uint8_t indexGraph = 0;
+uint8_t amountOfCoins = 0;
+uint8_t flagUpdateScreen = true;
+uint8_t showData = false;
+uint8_t dataOnScreen = false;
+
+requestHandler httpHandler;
 displayHandler display;
 namePriceTimeStruct infoCoin;
+sizeButtonStruct buttonLeft;
+sizeButtonStruct buttonRight;
+sizeButtonStruct buttonGraph;
+dataGraphStruct dataForGraph;
+uint8_t** arrayOfCoins;
 
 #define STANDARD_CONFIG_AP   true 
 
