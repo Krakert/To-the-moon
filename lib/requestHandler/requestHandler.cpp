@@ -2,6 +2,17 @@
 
 /**************************************************************************/
 /*!
+  @brief    Constructor for class, setup the filters needed for the JSON
+*/
+/**************************************************************************/
+requestHandler::requestHandler(){
+    JsonObject filter_data = filter.createNestedObject("data");
+    filter_data["id"] = true;
+    filter_data["price"] = true;
+    filter_data["price_timestamp"] = true;
+}
+/**************************************************************************/
+/*!
   @brief    Asks the API for the data of a coin and place it in a Struct
   @param    coinId                      String: SSID name, max 32 bytes
   @param    namePriceTimeStruct         Struct*: pointer to a Struct with 3 Strings
@@ -12,44 +23,41 @@ void requestHandler::requestFromApi(String coinId, namePriceTimeStruct *namePric
     if (Serial){
         Serial.println("Class requestHandler, function: requestFromApi");
     }
+    StaticJsonDocument<512> doc;
+
     String completPath = REQUEST_ADDRESS_API + coinId;
     static char buffer[64];
     if (Serial && debug){
         sprintf(buffer,"Making request to %s", completPath.c_str());
         Serial.println(buffer); 
     }
+
     String payload;
     HTTPClient http;
     http.begin(clientHttpCall, completPath); 
-    int httpCode = http.GET(); 
-    if (httpCode > 0) { 
-      payload = http.getString();
-      if (Serial && debug){
-          Serial.println(payload); 
-      }
-    }
-    http.end();
-
-
-    JsonObject filter_data = filter.createNestedObject("data");
-    filter_data["id"] = true;
-    filter_data["price"] = true;
-    filter_data["price_timestamp"] = true;
-
-    DeserializationError error = deserializeJson(doc, payload, DeserializationOption::Filter(filter));
-
-    if (error) {
-        if (Serial){
-            Serial.print(F("deserializeJson() failed: "));
-            Serial.println(error.f_str());
+    int httpCode = http.GET();
+        if (httpCode > 0) {
+        DeserializationError error = deserializeJson(doc, http.getStream(), DeserializationOption::Filter(filter));
+        http.end();
+        if (error) {
+            if (Serial){
+                Serial.print(F("deserializeJson() failed: "));
+                Serial.println(error.f_str());
+            }
+        } else{
+            namePriceTimeStruct->idCoin = doc["data"]["id"].as<String>();
+            namePriceTimeStruct->priceCoin =  doc["data"]["price"].as<String>();
+            String correctDate = doc["data"]["price_timestamp"].as<String>();
+            correctDate.replace("Z", "");
+            namePriceTimeStruct->timeStamp = correctDate;
+            static char buffer[64];
+            if (Serial && debug){
+                sprintf(buffer,"data struct %s, %s, %s", namePriceTimeStruct->idCoin.c_str(), namePriceTimeStruct->priceCoin.c_str(), namePriceTimeStruct->timeStamp.c_str());
+                Serial.println(buffer); 
+            }
         }
-    } else{
-        namePriceTimeStruct->idCoin = doc["data"]["id"].as<String>();
-        namePriceTimeStruct->priceCoin =  doc["data"]["price"].as<String>();
-        String correctDate = doc["data"]["price_timestamp"].as<String>();
-        correctDate.replace("Z", "");
-        namePriceTimeStruct->timeStamp = correctDate;
     }
+    delay(50);
 }
 
 /**************************************************************************/
@@ -86,6 +94,7 @@ uint8_t requestHandler::requestInsertDataCoin(namePriceTimeStruct *namePriceTime
       }
     }
     http.end();
+    delay(50);
     if (payload == "true"){
         return 1;
     } else if (payload == "false"){
@@ -105,7 +114,8 @@ uint8_t* requestHandler::requestGetCoinsDatabase(uint8_t debug){
     if (Serial){
         Serial.println("Class requestHandler, function: requestGetCoinsDatabase");
     }
-    String payload;
+    StaticJsonDocument<512> doc;
+
     sprintf(fullHttpCall, "%s%d%s", REQUEST_ADDRESS_DATABASE_BASE, 
                                     DATABASE_PORT_NUMBER, 
                                     REQUEST_DATABASE_LIST_COINS);
@@ -118,19 +128,15 @@ uint8_t* requestHandler::requestGetCoinsDatabase(uint8_t debug){
     http.begin(clientHttpCall, fullHttpCall); 
     int httpCode = http.GET(); 
     if (httpCode > 0) { 
-      payload = http.getString();
-      if (Serial && debug){
-          Serial.println(payload); 
-      }
-    }
-    DeserializationError error = deserializeJson(doc, payload);
-
-    if (error) {
-        if (Serial && debug){
-            Serial.print(F("deserializeJson() failed: "));
-            Serial.println(error.f_str());
+        DeserializationError error = deserializeJson(doc, http.getStream());
+        if (error) {
+            if (Serial && debug){
+                Serial.print(F("deserializeJson() failed: "));
+                Serial.println(error.f_str());
+            }
         }
     }
+    
     static uint8_t arrayCoins[BYTES_NEEDED_FROM_EEPROM_COINS];
     uint8_t index = 0;
     for (JsonObject item : doc.as<JsonArray>()) {        
@@ -174,4 +180,57 @@ uint8_t** requestHandler::fillArrayWithCoinIds(uint8_t* arrayOfTheCoins){
         }
     }
     return arrayToReturn;
+}
+
+/**************************************************************************/
+/*!
+  @brief    Get last 8 points from database and save them in the dataGraphStruct 
+  @param    arrayOfTheCoins             uint8_t**: Pointer to 2D array
+  @param    index                       uint8_t:  Index in the 2D array for coin, is controlled by main loop
+  @param    dataGraphStruct             dataGraphStruct*: Pointer to the struct
+  @param    debug                       uint8_t: True, false, when true print more data of the call
+*/
+/**************************************************************************/
+void requestHandler::requestGetListDataCoin(uint8_t** arrayOfCoins, uint8_t index, dataGraphStruct *dataForGraph, uint8_t debug){
+    if (Serial){
+        Serial.println("Class requestHandler, function: requestGetListDataCoin");
+    }
+    StaticJsonDocument<512> doc;
+    char coinId[4];
+    for (uint8_t i = 0; i < 4; i++) {
+        coinId[i] = arrayOfCoins[index][i];
+    }
+
+    sprintf(fullHttpCall, "%s%d%s%s", REQUEST_ADDRESS_DATABASE_BASE, 
+                                    DATABASE_PORT_NUMBER, 
+                                    REQUEST_DATABASE_LIST_DATA_COIN,
+                                    coinId);
+    if (Serial && debug){
+        char buffer[256];
+        sprintf(buffer, "Making call to URL: %s", fullHttpCall);
+        Serial.println(buffer);
+    }
+    HTTPClient http;
+    http.begin(clientHttpCall, fullHttpCall); 
+    int httpCode = http.GET(); 
+    if (httpCode > 0) { 
+        DeserializationError error = deserializeJson(doc, http.getStream());
+        if (error) {
+            if (Serial && debug){
+                Serial.print(F("deserializeJson() failed: "));
+                Serial.println(error.f_str());
+            }
+        }
+    }
+    uint8_t indexLoop = 0;
+    for (JsonObject item : doc.as<JsonArray>()) {        
+        dataForGraph->rawXAxis[indexLoop] = item["value"].as<double>();
+        if (Serial && debug){
+            char buff[16];
+            sprintf(buff, "%f ", dataForGraph->rawXAxis[indexLoop]);
+            Serial.print(buff);
+        }
+        indexLoop++;
+    }
+    Serial.println();
 }
