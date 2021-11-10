@@ -235,9 +235,11 @@ void listCoins(uint8_t** arrayOfCoins){
             for (uint8_t k = 0; k < BYTES_PER_ID_COIN; k++){
                 if (arrayOfCoins[j][k] != '\0'){    
                 coinName[k] = arrayOfCoins[j][k];
+                } else {
+                    coinName[k] = '\0';
                 }
             }
-            if (strlen(coinName) > 0){
+            if (strlen(coinName) >= BYTES_PER_ID_COIN - 2){
                 Serial.print(coinName);
                 Serial.println();
             }
