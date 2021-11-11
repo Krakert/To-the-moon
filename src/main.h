@@ -4,7 +4,6 @@
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 
-
 /* ADDED HEADER FILES SELFMADE */
 #include <wifiHandler.h>
 #include <displayHandler.h>
@@ -15,7 +14,7 @@ unsigned long previousMillis = 0;
 const int buttonPin = 5;   
 uint8_t buttonState = 0;
 
-#define INTERVAL_UPDATE 40*1000
+#define INTERVAL_UPDATE 60*1000
 
 uint8_t STATION = false;
 uint8_t FIRSTRUN = true;
@@ -25,7 +24,6 @@ uint8_t indexGraph = 0;
 uint8_t amountOfCoins = 0;
 uint8_t flagUpdateScreen = true;
 uint8_t showData = false;
-uint8_t dataOnScreen = false;
 
 requestHandler httpHandler;
 displayHandler display;
@@ -35,6 +33,7 @@ sizeButtonStruct buttonRight;
 sizeButtonStruct buttonGraph;
 dataGraphStruct dataForGraph;
 uint8_t** arrayOfCoins;
+static char bufferDisplay[32];
 
 #define STANDARD_CONFIG_AP   true 
 

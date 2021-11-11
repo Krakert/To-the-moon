@@ -15,7 +15,7 @@ void setup()
   if (buttonState){
     clearEeprom();
   }
-  
+
   /* GET DATA OF THE EEPROM AND DUMP IT VIA SERIAL */
   uint8_t** valuesOutEeprom = getConfigFormEeprom();
   // dumbDataEeprom();
@@ -86,7 +86,10 @@ void loop() {
 
   if (STATION) {
     if (display.ts.touched()){
-      tsPressed = true;
+      delay(25);
+      if (display.ts.touched()){
+        tsPressed = true;
+      }
     }  
 
     if (!display.ts.touched() && tsPressed && !tsReleased){
@@ -95,10 +98,8 @@ void loop() {
 
     if (!display.ts.touched() && tsPressed && tsReleased){
       TS_Point p = display.ts.getPoint();
-
       p.x = map(p.x, TS_MAXX, TS_MINX, display.tft.width(), 0);
       p.y = map(p.y, TS_MAXY, TS_MINY, display.tft.height(), 0);
-
       if(display.checkIfPressed(&buttonLeft, p.x, p.y)){
         if (indexGraph == 0){
           indexGraph = amountOfCoins - 1;
@@ -111,13 +112,8 @@ void loop() {
         } else {
           indexGraph++;
         }
-      } else if (display.checkIfPressed(&buttonGraph, p.x, p.y)) {
-          if (showData == false){
-            showData = true;
-          } else {
-            showData = false;
-            dataOnScreen = false;
-          }
+      } else if(display.checkIfPressed(&buttonGraph, p.x, p.y)) {
+        showData = !showData;
       }
       tsPressed = false;
       tsReleased = false;
@@ -125,38 +121,39 @@ void loop() {
     }
 
     if (flagUpdateScreen){
+      // Show pop up menu and intel
       if (showData == false){
         // get last 8 points out db.
-        httpHandler.requestGetListDataCoin(arrayOfCoins, indexGraph, &dataForGraph, true);
+        httpHandler.requestGetListDataCoin(arrayOfCoins, indexGraph, DATAPOINTS_GRAPH, &dataForGraph, true);
         // flush area 
         display.tft.fillRect(0, 0, DISPLAY_X_MAX, 60, ILI9341_BLACK);
         display.tft.fillRect(40, 60, 240, 160, ILI9341_BLACK);
-        display.drawGraph(&dataForGraph, 40, 220, 238, 160, 10);
+        display.drawGraph(&dataForGraph, 51, 220, 217, 160, 10);
         // Plot coin name
         display.tft.setCursor(10, 15);
         char coinName[4];
         for (uint8_t i = 0; i < 4; i++){
             coinName[i] = arrayOfCoins[indexGraph][i];
         }
-        display.tft.setTextSize(5);
+        display.tft.setTextSize(5);  
         display.tft.print(coinName);
         // plot last price know in DB
         display.tft.setCursor(140, 29);
         display.tft.setTextSize(3);
-        display.tft.print(dataForGraph.rawXAxis[7]);
-      // Show pop up menu and intel
-      } else if (showData == true){
-        if (dataOnScreen == false){
-          for (uint8_t i = 0; i < 8; i++){
-            display.placeBoxtInCenter(X_CENTER, Y_CENTER + 10, 220 + i, 80 + i, ILI9341_WHITE);
-          }
-          display.placeBoxtInCenter(X_CENTER, Y_CENTER + 10, 220, 80, ILI9341_BLUE, true);
-          String text = "Max: " + String(dataForGraph.maxMin[0]);
-          display.placeTextInCenter(text, X_CENTER, Y_CENTER - 10, 2, ILI9341_WHITE);
-          text = "Min: " + String(dataForGraph.maxMin[1]);
-          display.placeTextInCenter(text, X_CENTER, Y_CENTER + 30, 2, ILI9341_WHITE);
-          dataOnScreen = true;
+        memset(bufferDisplay, 0, 32);
+        sprintf(bufferDisplay, "%0.4f", dataForGraph.rawXAxis[7]); 
+        display.tft.print(bufferDisplay);
+      } else {
+        for (uint8_t i = 0; i < 8; i++){
+          display.placeBoxtInCenter(X_CENTER, Y_CENTER + 10, 220 + i, 80 + i, ILI9341_WHITE);
         }
+        display.placeBoxtInCenter(X_CENTER, Y_CENTER + 10, 220, 80, ILI9341_BLUE, true);
+        sprintf(bufferDisplay, "Max: %0.4f", dataForGraph.maxMin[0]); 
+        display.placeTextInCenter(bufferDisplay, X_CENTER, Y_CENTER - 10, 2, ILI9341_WHITE);
+        sprintf(bufferDisplay, "Min: %0.4f", dataForGraph.maxMin[1]); 
+        display.placeTextInCenter(bufferDisplay, X_CENTER, Y_CENTER + 10, 2, ILI9341_WHITE);
+        sprintf(bufferDisplay, "Procent: %0.4f", dataForGraph.procent); 
+        display.placeTextInCenter(bufferDisplay, X_CENTER, Y_CENTER + 30, 2, ILI9341_WHITE);
       }
       flagUpdateScreen = false;
     }
