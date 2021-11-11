@@ -42,7 +42,7 @@ void displayHandler::boot(){
   uint16_t i = 10;
   for (i = 10; i < 290; i = i + 10){
     tft.fillRect(X_OFFSET+1, Y_OFFSET+1, i-2, HEIGHT-2, ILI9341_GREEN);
-    delay(90);
+    delay(120);
   }
 }
 
