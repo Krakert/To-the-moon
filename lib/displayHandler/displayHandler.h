@@ -45,6 +45,7 @@ typedef struct {
     uint16_t  Yaxis[8];
     uint16_t  Xaxis[8];
     double   maxMin[2];
+    double     percent;
 } dataGraphStruct;
 
 typedef struct {
@@ -115,6 +116,7 @@ class displayHandler {
         void setTextColorToDefault();
 
         double mapDouble(double value, double in_min, double in_max, double out_min, double out_max);
+        double percent(double a, double b);
 };
 
 #endif // DISPLAYHANDLER_H

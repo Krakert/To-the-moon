@@ -188,6 +188,8 @@ void displayHandler::drawGraph(dataGraphStruct *dataGraphStruct, uint16_t x, uin
       dataGraphStruct->maxMin[1] = dataGraphStruct->rawXAxis[i];
   }
 
+  dataGraphStruct->percent = percent(dataGraphStruct->rawXAxis[0], dataGraphStruct->rawXAxis[7]);
+
   for (int i = 0; i < 8; i++) {
     dataGraphStruct->Yaxis[i] = mapDouble(dataGraphStruct->rawXAxis[i], dataGraphStruct->maxMin[1], dataGraphStruct->maxMin[0], offset, h - offset);
   }
@@ -261,4 +263,9 @@ void displayHandler::setToDefault(){
 /**************************************************************************/
 double displayHandler::mapDouble(double value, double in_min, double in_max, double out_min, double out_max){
   return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+double displayHandler::percent(double a, double b){
+    double result = 0;
+    return result = ((b - a) * 100) / a;
 }
