@@ -42,7 +42,7 @@ void displayHandler::boot(){
   uint16_t i = 10;
   for (i = 10; i < 290; i = i + 10){
     tft.fillRect(X_OFFSET+1, Y_OFFSET+1, i-2, HEIGHT-2, ILI9341_GREEN);
-    delay(10);
+    delay(90);
   }
 }
 
@@ -52,20 +52,21 @@ void displayHandler::boot(){
 */
 /**************************************************************************/
 void displayHandler::showInitScreenAp(){
-  tft.fillRect(X_OFFSET, Y_OFFSET, 290, Y_CENTER + 20, ILI9341_WHITE);
+  tft.fillScreen(ILI9341_BLACK);
+  // tft.fillRect(X_OFFSET, Y_OFFSET, 290, Y_CENTER + 20, ILI9341_WHITE);
   placeTextInCenter("Setup the device", (X_CENTER), Y_OFFSET, 3, ILI9341_BLUE);
-  tft.drawLine(10, (Y_OFFSET + (HEIGHT / 2)), (DISPLAY_X_MAX - 10),(Y_OFFSET + (HEIGHT / 2)), ILI9341_BLACK);
-  placeTextInCenter("Connect to wifi point:", X_CENTER, 80, 2, ILI9341_BLACK);
+  tft.drawLine(10, (Y_OFFSET + (HEIGHT / 2)), (DISPLAY_X_MAX - 10),(Y_OFFSET + (HEIGHT / 2)), ILI9341_WHITE);
+  placeTextInCenter("Connect to wifi point:", X_CENTER, 80, 2, ILI9341_WHITE);
   placeTextInCenter(WIFI_AP_STANDARD_SSID, X_CENTER, 105, 2, ILI9341_BLUE);
   String text = "Using password:" + String(WIFI_AP_STANDARD_PSW);
-  placeTextInCenter(text, X_CENTER, 130, 2, ILI9341_BLACK);
+  placeTextInCenter(text, X_CENTER, 130, 2, ILI9341_WHITE);
   text = "Go to:" + String(WIFI_AP_STANDARD_IP[0]) + "." 
                   + String(WIFI_AP_STANDARD_IP[1]) + "." 
                   + String(WIFI_AP_STANDARD_IP[2]) + "." 
                   + String(WIFI_AP_STANDARD_IP[3]);
-  placeTextInCenter(text, X_CENTER, 155, 2, ILI9341_BLACK);
-  placeTextInCenter("Here enter the data to", X_CENTER, 180, 2, ILI9341_BLACK);
-  placeTextInCenter("Connect to your own wifi", X_CENTER, 205, 2, ILI9341_BLACK);
+  placeTextInCenter(text, X_CENTER, 155, 2, ILI9341_WHITE);
+  placeTextInCenter("Here enter the data to", X_CENTER, 180, 2, ILI9341_WHITE);
+  placeTextInCenter("Connect to your own wifi", X_CENTER, 205, 2, ILI9341_WHITE);
 }
 
 /**************************************************************************/
