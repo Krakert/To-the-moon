@@ -40,12 +40,14 @@
 #define BAR_CENTER_X        X_OFFSET + (WIDTH / 2)
 #define BAR_CENTER_Y        Y_OFFSET + (HEIGHT / 2)
 
+#define DATAPOINTS_GRAPH  32
+
 typedef struct {
-    double rawXAxis[8];
-    uint16_t  Yaxis[8];
-    uint16_t  Xaxis[8];
+    double rawXAxis[DATAPOINTS_GRAPH];
+    uint16_t  Yaxis[DATAPOINTS_GRAPH];
+    uint16_t  Xaxis[DATAPOINTS_GRAPH];
     double   maxMin[2];
-    double     percent;
+    double     procent;
 } dataGraphStruct;
 
 typedef struct {

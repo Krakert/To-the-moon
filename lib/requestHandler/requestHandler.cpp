@@ -191,20 +191,21 @@ uint8_t** requestHandler::fillArrayWithCoinIds(uint8_t* arrayOfTheCoins){
   @param    debug                       uint8_t: True, false, when true print more data of the call
 */
 /**************************************************************************/
-void requestHandler::requestGetListDataCoin(uint8_t** arrayOfCoins, uint8_t index, dataGraphStruct *dataForGraph, uint8_t debug){
+void requestHandler::requestGetListDataCoin(uint8_t** arrayOfCoins, uint8_t index, uint8_t amountOfPoints, dataGraphStruct *dataForGraph, uint8_t debug){
     if (Serial){
         Serial.println("Class requestHandler, function: requestGetListDataCoin");
     }
-    StaticJsonDocument<512> doc;
+    StaticJsonDocument<2048> doc;
     char coinId[4];
     for (uint8_t i = 0; i < 4; i++) {
         coinId[i] = arrayOfCoins[index][i];
     }
 
-    sprintf(fullHttpCall, "%s%d%s%s", REQUEST_ADDRESS_DATABASE_BASE, 
+    sprintf(fullHttpCall, "%s%d%s%s/%u", REQUEST_ADDRESS_DATABASE_BASE, 
                                     DATABASE_PORT_NUMBER, 
                                     REQUEST_DATABASE_LIST_DATA_COIN,
-                                    coinId);
+                                    coinId,
+                                    amountOfPoints);
     if (Serial && debug){
         char buffer[256];
         sprintf(buffer, "Making call to URL: %s", fullHttpCall);

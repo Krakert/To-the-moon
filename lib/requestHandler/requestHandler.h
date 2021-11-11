@@ -12,7 +12,6 @@
 #define REQUEST_DATABASE_INSERT_DATA        "/insert/data"
 #define REQUEST_DATABASE_LIST_COINS         "/get/coins"
 #define REQUEST_DATABASE_LIST_DATA_COIN     "/get/"
-#define AMOUNT_OF_DATAPOINT                 8
 
 typedef struct {
     String idCoin;
@@ -30,7 +29,7 @@ class requestHandler{
         uint8_t requestInsertDataCoin(namePriceTimeStruct *namePriceTimeStruct, uint8_t debug);
         uint8_t* requestGetCoinsDatabase(uint8_t debug);
         uint8_t** fillArrayWithCoinIds(uint8_t* arrayOfTheCoins);
-        void requestGetListDataCoin(uint8_t** arrayOfCoins, uint8_t index, dataGraphStruct *dataForGraph, uint8_t debug);
+        void requestGetListDataCoin(uint8_t** arrayOfCoins, uint8_t index, uint8_t amountOfPoints, dataGraphStruct *dataForGraph, uint8_t debug);
     private:
         WiFiClient clientHttpCall;    
         StaticJsonDocument<64> filter;

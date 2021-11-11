@@ -69,6 +69,14 @@ def send(query):
     return result
 
 """
+@brief      Get all data of table DataCoins
+@return     result                  String: If successful, data from the database, else "false" 
+"""
+@app.route('/get')
+def get_all_data(): 
+    return str(get('SELECT * FROM `DataCoins`'))
+
+"""
 @brief      Get all coins from the database
 @return     result                  String: If successful, data from the database, else "false"
 """
@@ -113,9 +121,9 @@ def checkIfCoinThere(coinId):
     else:
         return result
 
-@app.route('/get/<string:coinId>')
-def getPriceCoin(coinId):
-    result = str(get('call getData(upper(\'%s\'))'%coinId))
+@app.route('/get/<string:coinId>/<string:amount>')
+def getPriceCoin(coinId, amount):
+    result = str(get('call getData(upper(\'%s\'), %d)'%(coinId, int(amount))))
     if result == "()":
         return "false"
     else:

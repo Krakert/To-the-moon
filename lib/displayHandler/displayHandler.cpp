@@ -178,32 +178,33 @@ void displayHandler::drawRectButton(int16_t x, int16_t y, int16_t w, int16_t h, 
 void displayHandler::drawGraph(dataGraphStruct *dataGraphStruct, uint16_t x, uint16_t y, uint16_t w, uint16 h, uint8_t offset){
 
   dataGraphStruct->maxMin[0] = dataGraphStruct->rawXAxis[0];
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < DATAPOINTS_GRAPH; i++) {
     if (dataGraphStruct->maxMin[0] < dataGraphStruct->rawXAxis[i])
       dataGraphStruct->maxMin[0] = dataGraphStruct->rawXAxis[i];
   }
   dataGraphStruct->maxMin[1] = dataGraphStruct->rawXAxis[0];
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < DATAPOINTS_GRAPH; i++) {
     if (dataGraphStruct->maxMin[1] > dataGraphStruct->rawXAxis[i])
       dataGraphStruct->maxMin[1] = dataGraphStruct->rawXAxis[i];
   }
 
-  dataGraphStruct->percent = percent(dataGraphStruct->rawXAxis[0], dataGraphStruct->rawXAxis[7]);
+  dataGraphStruct->procent = percent(dataGraphStruct->rawXAxis[0], dataGraphStruct->rawXAxis[7]);
 
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < DATAPOINTS_GRAPH; i++) {
     dataGraphStruct->Yaxis[i] = mapDouble(dataGraphStruct->rawXAxis[i], dataGraphStruct->maxMin[1], dataGraphStruct->maxMin[0], offset, h - offset);
   }
 
-  uint8_t stepSize = w / 7;
-  for (int i = 0; i < 8; i++) {
+  uint8_t stepSize = w / (DATAPOINTS_GRAPH - 1);
+  for (int i = 0; i < DATAPOINTS_GRAPH; i++) {
     if (i == 0){
       dataGraphStruct->Xaxis[i] = x;
     } else {
       dataGraphStruct->Xaxis[i] = (x + (i * stepSize));
     }
+    Serial.println(dataGraphStruct->Xaxis[i]);
   }
 
-  for (int i = 0; i < 7; i++) {
+  for (int i = 0; i < DATAPOINTS_GRAPH - 1; i++) {
     if (dataGraphStruct->Yaxis[i] < dataGraphStruct->Yaxis[(i + 1)]){
       tft.drawLine(dataGraphStruct->Xaxis[i], y - dataGraphStruct->Yaxis[i],dataGraphStruct->Xaxis[(i + 1)], y - dataGraphStruct->Yaxis[(i + 1)], ILI9341_GREEN);
     } else {
