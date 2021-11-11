@@ -57,7 +57,7 @@ void requestHandler::requestFromApi(String coinId, namePriceTimeStruct *namePric
             }
         }
     }
-    delay(50);
+    delay(25);
 }
 
 /**************************************************************************/
@@ -94,7 +94,7 @@ uint8_t requestHandler::requestInsertDataCoin(namePriceTimeStruct *namePriceTime
       }
     }
     http.end();
-    delay(50);
+    delay(25);
     if (payload == "true"){
         return 1;
     } else if (payload == "false"){
