@@ -201,7 +201,6 @@ void displayHandler::drawGraph(dataGraphStruct *dataGraphStruct, uint16_t x, uin
     } else {
       dataGraphStruct->Xaxis[i] = (x + (i * stepSize));
     }
-    Serial.println(dataGraphStruct->Xaxis[i]);
   }
 
   for (int i = 0; i < DATAPOINTS_GRAPH - 1; i++) {
