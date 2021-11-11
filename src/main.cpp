@@ -4,25 +4,18 @@ void updateAll();
 
 void setup()
 {
+  pinMode(buttonPin, INPUT);
   Serial.begin(115200);
   Serial.println();
   initEeprom();
   display.init();
   LittleFS.begin();
 
-  // String ssid = "stefan";  
-  // String psw = "dekraker";
-  // String ssid = "POCO F2 Pro";  
-  // String psw = "KTMDuke69018@";
-  // String ssid = "Huisdekraker";
-  // String psw = "FAGHPTB438FQ";
-  const char* ssid = "pvstsdkjdk";
-  const char* psw = "KKCA6TBV8TA7";
-
-  saveApToEeprom(ssid, psw);
-  // TODO make reset function, if GPIO IS high clear eeprom
-  // clearEeprom();
-
+  buttonState = digitalRead(buttonPin);
+  if (buttonState){
+    clearEeprom();
+  }
+  
   /* GET DATA OF THE EEPROM AND DUMP IT VIA SERIAL */
   uint8_t** valuesOutEeprom = getConfigFormEeprom();
   // dumbDataEeprom();
@@ -52,8 +45,6 @@ void setup()
       server.onNotFound(handleNotFound);
       server.begin(); 
     }
-    
-    
   } 
   
   if (STATION == false) {
@@ -92,6 +83,7 @@ void setup()
 }
 
 void loop() {
+
   if (STATION) {
     if (display.ts.touched()){
       tsPressed = true;
@@ -136,7 +128,6 @@ void loop() {
       if (showData == false){
         // get last 8 points out db.
         httpHandler.requestGetListDataCoin(arrayOfCoins, indexGraph, &dataForGraph, true);
-        // * works great!
         // flush area 
         display.tft.fillRect(0, 0, DISPLAY_X_MAX, 60, ILI9341_BLACK);
         display.tft.fillRect(40, 60, 240, 160, ILI9341_BLACK);

@@ -11,9 +11,11 @@
 #include <eepromHandler.h>
 #include <requestHandler.h>
 
-unsigned long previousMillis = 0;        
+unsigned long previousMillis = 0;
+const int buttonPin = 5;   
+uint8_t buttonState = 0;
 
-#define INTERVAL_UPDATE 1000*60*5.5
+#define INTERVAL_UPDATE 40*1000
 
 uint8_t STATION = false;
 uint8_t FIRSTRUN = true;
