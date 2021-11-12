@@ -8,4 +8,14 @@ To_the_moon-cache.lib
 To_the_moon.sch-bak
 .pio/
 .vscode/
-.idea/iot-krakers.iml
+*.iml
+*.idea/
+*.aux
+*.fdb_latexmk
+*.fls
+*.hst
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.ver
