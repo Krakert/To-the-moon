@@ -83,7 +83,7 @@
                         row = document.createElement('div');
                         row.setAttribute("id", "coin_" + i);
                         row.setAttribute("class", "below");
-                        row.innerHTML = jsonResponse[i].coin_id + ", " + jsonResponse[i].full_name;
+                        row.innerHTML = jsonResponse[i].coin_id + ", " + jsonResponse[i].full_name + "  ";
                         document.getElementById("listInDb").appendChild(row);
                         button = document.createElement("button");
                         button.setAttribute("id", "coin_" + i + "_remove");
