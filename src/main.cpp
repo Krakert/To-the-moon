@@ -74,13 +74,14 @@ void setup()
     display.showInitScreenAp();
   }   
   display.setToDefault();
+  display.clear(ILI9341_BLACK);
   for (uint8_t i = 0; i < 8; i++){
     display.placeBoxtInCenter(X_CENTER, Y_CENTER, 220 + i, 80 + i, ILI9341_WHITE);
   }
   display.placeBoxtInCenter(X_CENTER, Y_CENTER, 220, 80, ILI9341_BLUE, true);
   display.placeTextInCenter(WiFi.localIP().toString(), X_CENTER, Y_CENTER,2, ILI9341_WHITE);
   delay(3000);
-  display.clear(ILI9341_BLACK);
+  
   display.drawTriangleButton(10, Y_CENTER, 30, (Y_CENTER  + Y_CENTER/3), 30, (Y_CENTER  - Y_CENTER/3), &buttonLeft, ILI9341_BLUE);
   display.drawTriangleButton((DISPLAY_X_MAX - 10), Y_CENTER, (DISPLAY_X_MAX - 30), (Y_CENTER  + Y_CENTER/3), (DISPLAY_X_MAX - 30), (Y_CENTER  - Y_CENTER/3), &buttonRight, ILI9341_BLUE);
   display.drawRectButton(40, 60, 238, 160, &buttonGraph);
