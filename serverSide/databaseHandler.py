@@ -68,13 +68,6 @@ def send(query):
         cursor.close()
     return result
 
-"""
-@brief      Get all data of table DataCoins
-@return     result                  String: If successful, data from the database, else "false" 
-"""
-@app.route('/get')
-def get_all_data(): 
-    return str(get('SELECT * FROM `DataCoins`'))
 
 """
 @brief      Get all coins from the database
