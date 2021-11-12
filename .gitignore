@@ -1,5 +1,19 @@
+<<<<<<< HEAD
 .pio
 .vscode/*
 .idea/*
 *.code-workspace
 fp-info-cache
+=======
+*.sch-bak
+*.lib
+*.xml
+*.code-workspace
+*.kicad_pcb-bak
+fp-info-cache
+To_the_moon-cache.lib
+To_the_moon.sch-bak
+.pio/
+.vscode/
+.idea/iot-krakers.iml
+>>>>>>> hardware
