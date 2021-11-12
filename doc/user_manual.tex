@@ -78,6 +78,7 @@
     \newpage
     \begin{versionhistory}
         \vhEntry{1.0}{12.11.21}{SDK}{First version}
+        \vhEntry{1.1}{12.11.21}{SDK}{Added User inferface explanation}
     \end{versionhistory}
     \newpage
     \tableofcontents
@@ -176,6 +177,43 @@
     \subsection{Remove coin}\label{subsec:remove-coin}
     To remove a coin, simply press the ``Remove coin'' beside the information of the coin~\textcolor{blue}{(4 in \cref{fig:webserver})}.
     The website is automatically reloaded, and the coin will be removed from the Crypt-o-meter.
+
+    \newpage
+
+    \section{User Interface of the Crypt-o-meter}\label{sec:user-interface-crypt-o-meter}
+    When the Crypt-o-meter is successfully setup and coins are added, after a restart the Crypt-o-meter will plot the user interface (see~\textcolor{blue}{\cref{fig:main_UI}}).
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\textwidth]{screen_1}
+        \caption{Main user interface}
+        \label{fig:main_UI}
+    \end{figure}
+
+    \begin{enumerate}
+        \item Step up in the list of the coins being tracked
+        \item The graph that represents the raise and fall of the value of a coin
+        \item Step down in the list of the coins being tracked
+        \item Most resent price of a coin
+        \item The ID of the coin, in example (ADA, Cardano)
+    \end{enumerate}
+
+    When you press on the graph you will be presented with a pop up dialog, in that you find the maximum price and the minimum price of the coin.
+    And the differents between the first and last point in the graph is presented in a percentual growth, (see~\textcolor{blue}{\cref{fig:pop_ui}}).
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\textwidth]{screen_2}
+        \caption{Main user interface}
+        \label{fig:pop_ui}
+    \end{figure}
+
+    \begin{enumerate}
+        \item Pop up dialog
+        \item Max price of the coin in the graph
+        \item Min price of the coin in the graph
+        \item Percentual growth of the coin
+    \end{enumerate}
 
     \newpage
 
