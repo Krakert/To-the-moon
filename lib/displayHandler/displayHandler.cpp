@@ -1,3 +1,4 @@
+/// @file  
 #include <displayHandler.h>
 #include <wifiHandler.h>
 /*
@@ -96,7 +97,7 @@ uint16_t * displayHandler::placeTextInCenter(const String &textBuf, int16_t x, i
 /*!
   @brief    Place a rectangular in the center of a X an Y coordinate
   @param    x                       int16_t:  X coordinate of the center of the rectangle
-  @param    Y                       int16_t:  Y coordinate of the center of the rectangle
+  @param    y                       int16_t:  Y coordinate of the center of the rectangle
   @param    w                       int16_t:  Width of the rectangle
   @param    h                       int16_t:  Height of the rectangle
   @param    color                   uint16_t: Color of the rectangle
@@ -114,11 +115,11 @@ void displayHandler::placeBoxtInCenter(int16_t x,  int16_t y, int16_t w, int16_t
 /**************************************************************************/
 /*!
   @brief    Place a triangle and save a box that represents the touch area
-  @param    x0                      int16_t: Vertex #0 y coordinate
-  @param    Y0                      int16_t: Vertex #1 x coordinate
+  @param    x0                      int16_t: Vertex #0 x coordinate
+  @param    y0                      int16_t: Vertex #1 y coordinate
   @param    x1                      int16_t: Vertex #1 x coordinate
   @param    y1                      int16_t: Vertex #1 y coordinate
-  @param    X2                      int16_t: Vertex #2 x coordinate
+  @param    x2                      int16_t: Vertex #2 x coordinate
   @param    y2                      int16_t: Vertex #2 y coordinate
   @param    sizeButtonStruct        sizeButtonStruct: Pointer to struct to save data
   @param    color                   uint16_t: Color of the rectangle
@@ -147,8 +148,8 @@ void displayHandler::drawTriangleButton(int16_t x0, int16_t y0, int16_t x1, int1
 /**************************************************************************/
 /*!
   @brief    Place a rectangle and save a box that represents the touch area
-  @param    x0                      int16_t: Vertex #0 y coordinate
-  @param    Y0                      int16_t: Vertex #1 x coordinate
+  @param    x                       int16_t: X coordinate, top left corner
+  @param    y                       int16_t: Y coordinate, top left corner
   @param    w                       int16_t: Width of the rectangle
   @param    h                       int16_t: Height of the rectangle
   @param    sizeButtonStruct        sizeButtonStruct: Pointer to struct to save data
@@ -166,13 +167,13 @@ void displayHandler::drawRectButton(int16_t x, int16_t y, int16_t w, int16_t h, 
 
 /**************************************************************************/
 /*!
-  @brief    Place a rectangle and save a box that represents the touch area
-  @param    x0                      int16_t: Vertex #0 y coordinate
-  @param    Y0                      int16_t: Vertex #1 x coordinate
-  @param    w                       int16_t: Width of the rectangle
-  @param    h                       int16_t: Height of the rectangle
-  @param    sizeButtonStruct        sizeButtonStruct: Pointer to struct to save data
-  @param    color                   uint16_t: Color of the rectangle
+  @brief    Plot a graph on the display
+  @param    dataGraphStruct          dataGraphStruct: struct to store data for the Graph
+  @param    x                        uint16_t: X coordinate, bottom left side
+  @param    y                        uint16_t: Y coordinate, bottom left side
+  @param    w                        uint16_t: width of the graph
+  @param    h                        uint16:  height of the graph
+  @param    offset                   uint8_t: amount of pixels of the edge
 */
 /**************************************************************************/
 void displayHandler::drawGraph(dataGraphStruct *dataGraphStruct, uint16_t x, uint16_t y, uint16_t w, uint16 h, uint8_t offset){
@@ -265,6 +266,11 @@ double displayHandler::mapDouble(double value, double in_min, double in_max, dou
   return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
+/**************************************************************************/
+/*!
+  @brief    Calculate the percentage different between two double values
+*/
+/**************************************************************************/
 double displayHandler::percent(double a, double b){
     double result = 0;
     return result = ((b - a) * 100) / a;

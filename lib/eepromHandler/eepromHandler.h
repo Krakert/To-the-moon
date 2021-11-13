@@ -1,3 +1,4 @@
+/// @file
 #ifndef EEPROMHANDLER_H
 #define EEPROMHANDLER_H
 

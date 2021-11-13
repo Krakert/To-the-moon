@@ -1,3 +1,4 @@
+/// @file  
 #ifndef DISPLAYHANDLER_H
 #define DISPLAYHANDLER_H
 
@@ -42,6 +43,17 @@
 
 #define DATAPOINTS_GRAPH  32
 
+
+/**************************************************************************/
+/*!
+  @brief    This struct is used to save the data needed to make the graph
+  @param    rawXAxis                double[]: Data from the API
+  @param    Yaxis                   uint16_t[]: Data for the Y axis
+  @param    Xaxis                   uint16_t[]: Data for the X axis
+  @param    maxMix                  double[]: [0], max value, [1], min value
+  @param    procent                 double: Percentage growth
+*/
+/**************************************************************************/
 typedef struct {
     double rawXAxis[DATAPOINTS_GRAPH];
     uint16_t  Yaxis[DATAPOINTS_GRAPH];
@@ -50,6 +62,15 @@ typedef struct {
     double     procent;
 } dataGraphStruct;
 
+/**************************************************************************/
+/*!
+  @brief    This struct is used to save the data needed to check if a box is pressed on the touchscreen
+  @param    X                   uint16_t: X coordinate, Top left corner of the box
+  @param    Y                   uint16_t: Y coordinate, Top left corner of the box
+  @param    H                   uint16_t: Height of the box
+  @param    W                   uint16_t: Width of the box
+*/
+/**************************************************************************/
 typedef struct {
     uint16_t  X;
     uint16_t  Y;

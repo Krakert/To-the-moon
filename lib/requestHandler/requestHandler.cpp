@@ -1,3 +1,4 @@
+/// @file  
 #include <requestHandler.h>
 
 /**************************************************************************/
@@ -185,8 +186,9 @@ uint8_t** requestHandler::fillArrayWithCoinIds(uint8_t* arrayOfTheCoins){
 /**************************************************************************/
 /*!
   @brief    Get last 8 points from database and save them in the dataGraphStruct 
-  @param    arrayOfTheCoins             uint8_t**: Pointer to 2D array
+  @param    arrayOfCoins                uint8_t**: Pointer to 2D array
   @param    index                       uint8_t:  Index in the 2D array for coin, is controlled by main loop
+  @param    amountOfPoints              uint8_t:  Amount of data points to get from database
   @param    dataGraphStruct             dataGraphStruct*: Pointer to the struct
   @param    debug                       uint8_t: True, false, when true print more data of the call
 */

@@ -1,3 +1,4 @@
+/// @file   
 #include <eepromHandler.h>
 /**************************************************************************/
 /*!
@@ -224,7 +225,7 @@ void saveCoinsToEeprom(uint8_t* arrayCoins, uint8_t debug){
 /**************************************************************************/
 /*!
   @brief    Print the 2D array and list the coins.
-  @param    arrayCoins              uint8_t**: pointer to a uint8_t 2D array 
+  @param    arrayOfCoins              uint8_t**: pointer to a uint8_t 2D array 
 */
 /**************************************************************************/
 void listCoins(uint8_t** arrayOfCoins){
