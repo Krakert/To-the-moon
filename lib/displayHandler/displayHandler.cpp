@@ -189,7 +189,7 @@ void displayHandler::drawGraph(dataGraphStruct *dataGraphStruct, uint16_t x, uin
       dataGraphStruct->maxMin[1] = dataGraphStruct->rawXAxis[i];
   }
 
-  dataGraphStruct->procent = percent(dataGraphStruct->rawXAxis[7], dataGraphStruct->rawXAxis[0]);
+  dataGraphStruct->procent = percent(dataGraphStruct->rawXAxis[0], dataGraphStruct->rawXAxis[DATAPOINTS_GRAPH - 1]);
 
   for (int i = 0; i < DATAPOINTS_GRAPH; i++) {
     dataGraphStruct->Yaxis[i] = mapDouble(dataGraphStruct->rawXAxis[i], dataGraphStruct->maxMin[1], dataGraphStruct->maxMin[0], offset, h - offset);
