@@ -5,9 +5,9 @@ from flask_cors import CORS
 import pymysql
 
 HOST_ADDRESS = 'oege.ie.hva.nl'
-USER_NAME = 'krakers'
-PASSWORD = 'QcfY/USWP#uG1yRM'
-NAME_DATABASE = 'zkrakers'
+USER_NAME = 'USER_NAME'
+PASSWORD = 'PASSWORD'
+NAME_DATABASE = 'NAME_DB'
 
 app = Flask(__name__)
 CORS(app)
